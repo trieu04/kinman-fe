@@ -1,35 +1,76 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import * as React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { MainLayout } from "./components/layout/MainLayout";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import { QuickAddModal } from "./components/expense/QuickAddModal";
+import { Login } from "./pages/Login";
+import { Signup } from "./pages/Signup";
+import { Dashboard } from "./pages/Dashboard";
+import { Transactions } from "./pages/Transactions";
+import { Groups } from "./pages/Groups";
+import { GroupDetail } from "./pages/GroupDetail";
+import { Settings } from "./pages/Settings";
+import { useAuthStore } from "./stores/authStore";
+import { useThemeStore } from "./stores/themeStore";
+import "./index.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [quickAddOpen, setQuickAddOpen] = React.useState(false);
+  const { isAuthenticated, fetchUser } = useAuthStore();
+  const { resolvedTheme } = useThemeStore();
+
+  // Check auth on mount
+  React.useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <BrowserRouter>
+      <div className={resolvedTheme === "dark" ? "dark" : ""}>
+        <Routes>
+          {/* Auth Routes */}
+          <Route
+            path="/login"
+            element={
+              isAuthenticated ? <Navigate to="/" replace /> : <Login />
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              isAuthenticated ? <Navigate to="/" replace /> : <Signup />
+            }
+          />
+
+          {/* Protected Routes */}
+          <Route element={(
+            <ProtectedRoute>
+              <MainLayout onQuickAddClick={() => setQuickAddOpen(true)} />
+            </ProtectedRoute>
+          )}
+          >
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/transactions" element={<Transactions />} />
+            <Route path="/groups" element={<Groups />} />
+            <Route path="/groups/:id" element={<GroupDetail />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+
+        {/* Quick Add Modal - Global */}
+        <QuickAddModal
+          open={quickAddOpen}
+          onOpenChange={setQuickAddOpen}
+          onSuccess={() => {
+            // Optionally refresh data
+          }}
+        />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
