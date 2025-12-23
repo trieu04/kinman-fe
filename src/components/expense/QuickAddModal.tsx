@@ -70,10 +70,10 @@ export function QuickAddModal({ open, onOpenChange, onSuccess }: QuickAddModalPr
   };
 
   const handleCreateCategory = async () => {
-    if (!newCategoryName.trim())
-      return;
+    if (!newCategoryName.trim()) return;
+    setIsSubmitting(true);
     try {
-      const category = await categoryService.create({ name: newCategoryName.trim() });
+      const category = await categoryService.create({ name: newCategoryName.trim(), type: "expense" });
       addCategory(category);
       setSelectedCategoryId(category.id);
       setShowNewCategory(false);
@@ -82,13 +82,16 @@ export function QuickAddModal({ open, onOpenChange, onSuccess }: QuickAddModalPr
     catch (error) {
       console.error("Failed to create category:", error);
     }
+    finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCreateWallet = async () => {
-    if (!newWalletName.trim())
-      return;
+    if (!newWalletName.trim()) return;
+    setIsSubmitting(true);
     try {
-      const wallet = await walletService.create({ name: newWalletName.trim() });
+      const wallet = await walletService.create({ name: newWalletName.trim(), type: "cash", balance: 0, currency: "VND" });
       addWallet(wallet);
       setSelectedWalletId(wallet.id);
       setShowNewWallet(false);
@@ -97,21 +100,23 @@ export function QuickAddModal({ open, onOpenChange, onSuccess }: QuickAddModalPr
     catch (error) {
       console.error("Failed to create wallet:", error);
     }
+    finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleSubmit = async () => {
-    if (!finalAmount || finalAmount <= 0) {
-      return; // Don't submit without an amount
-    }
+    if (!finalAmount || finalAmount <= 0) return;
+    if (!selectedCategoryId || !selectedWalletId) return;
 
     setIsSubmitting(true);
     try {
       const dto: CreateTransactionDto = {
-        amount: -Math.abs(finalAmount), // Expenses are negative
+        amount: Math.abs(finalAmount),
         date: finalDate.toISOString(),
         note: finalNote,
-        categoryId: selectedCategoryId || undefined,
-        walletId: selectedWalletId || undefined,
+        categoryId: selectedCategoryId,
+        walletId: selectedWalletId,
       };
 
       await transactionService.create(dto);
@@ -186,6 +191,12 @@ export function QuickAddModal({ open, onOpenChange, onSuccess }: QuickAddModalPr
                         type="text"
                         value={newCategoryName}
                         onChange={e => setNewCategoryName(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleCreateCategory();
+                          }
+                        }}
                         placeholder="Category name"
                         className="flex-1 h-11 px-4 rounded-xl border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
                         autoFocus
@@ -231,6 +242,12 @@ export function QuickAddModal({ open, onOpenChange, onSuccess }: QuickAddModalPr
                         type="text"
                         value={newWalletName}
                         onChange={e => setNewWalletName(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleCreateWallet();
+                          }
+                        }}
                         placeholder="Wallet name"
                         className="flex-1 h-11 px-4 rounded-xl border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
                         autoFocus
@@ -329,7 +346,7 @@ export function QuickAddModal({ open, onOpenChange, onSuccess }: QuickAddModalPr
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={isSubmitting || finalAmount <= 0}
+            disabled={isSubmitting || finalAmount <= 0 || !selectedCategoryId || !selectedWalletId}
             className="px-6 bg-gradient-to-r from-primary to-purple-500 shadow-lg shadow-primary/25"
           >
             {isSubmitting

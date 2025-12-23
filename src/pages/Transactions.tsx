@@ -10,17 +10,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import { EditTransactionModal } from "../components/expense/EditTransactionModal";
 import transactionService from "../services/transactionService";
 import { useExpenseStore } from "../stores/expenseStore";
 import type { Transaction, TransactionFilter } from "../types";
 import { format } from "date-fns";
 
 export function Transactions() {
-  const { categories, wallets, fetchCategories, fetchWallets } = useExpenseStore();
+  const { categories, wallets, fetchCategories, fetchWallets, refreshTrigger, triggerRefresh } = useExpenseStore();
   const [transactions, setTransactions] = React.useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [filter, setFilter] = React.useState<TransactionFilter>({});
   const [searchText, setSearchText] = React.useState("");
+  const [editingTransaction, setEditingTransaction] = React.useState<Transaction | null>(null);
+  const [editModalOpen, setEditModalOpen] = React.useState(false);
 
   const fetchTransactions = async () => {
     setIsLoading(true);
@@ -44,7 +47,7 @@ export function Transactions() {
   React.useEffect(() => {
     fetchTransactions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]);
+  }, [filter, refreshTrigger]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this transaction?"))
@@ -52,10 +55,23 @@ export function Transactions() {
     try {
       await transactionService.delete(id);
       setTransactions(transactions.filter(t => t.id !== id));
+      triggerRefresh();
+      await fetchWallets();
     }
     catch (error) {
       console.error("Failed to delete transaction:", error);
     }
+  };
+
+  const handleEditClick = (tx: Transaction) => {
+    setEditingTransaction(tx);
+    setEditModalOpen(true);
+  };
+
+  const handleEditSuccess = () => {
+    fetchTransactions();
+    triggerRefresh();
+    fetchWallets();
   };
 
   const formatCurrency = (value: number) => {
@@ -74,12 +90,12 @@ export function Transactions() {
   );
 
   const totalExpense = filteredTransactions
-    .filter(t => t.amount < 0)
-    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+    .filter(t => Number(t.amount) < 0)
+    .reduce((sum, t) => sum + Math.abs(Number(t.amount)), 0);
 
   const totalIncome = filteredTransactions
-    .filter(t => t.amount > 0)
-    .reduce((sum, t) => sum + t.amount, 0);
+    .filter(t => Number(t.amount) > 0)
+    .reduce((sum, t) => sum + Number(t.amount), 0);
 
   if (isLoading) {
     return (
@@ -253,7 +269,12 @@ export function Transactions() {
                           {formatCurrency(Math.abs(tx.amount))}
                         </span>
                         <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => handleEditClick(tx)}
+                          >
                             <Edit className="w-4 h-4" />
                           </Button>
                           <Button
@@ -278,6 +299,16 @@ export function Transactions() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Edit Modal */}
+      {editingTransaction && (
+        <EditTransactionModal
+          open={editModalOpen}
+          onOpenChange={setEditModalOpen}
+          transaction={editingTransaction}
+          onSuccess={handleEditSuccess}
+        />
+      )}
     </div>
   );
 }
