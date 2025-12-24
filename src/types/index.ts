@@ -168,6 +168,12 @@ export interface MonthlyTrend {
   total: number;
 }
 
+export interface DailyTrend {
+  date: string; // ISO date (yyyy-mm-dd)
+  total: number;
+  count: number;
+}
+
 // ========== NLP Parsing ==========
 export interface NlpEntity {
   type: "date" | "amount";
