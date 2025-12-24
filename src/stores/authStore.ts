@@ -15,6 +15,7 @@ interface AuthState {
   signUp: (dto: SignUpDto) => Promise<void>;
   signOut: () => void;
   fetchUser: () => Promise<void>;
+  updateProfile: (data: Partial<User>) => Promise<void>;
   clearError: () => void;
 }
 
@@ -99,6 +100,19 @@ export const useAuthStore = create<AuthState>()(
       },
 
       clearError: () => set({ error: null }),
+
+      updateProfile: async (data: Partial<User>) => {
+        set({ isLoading: true, error: null });
+        try {
+          const updated = await authService.updateProfile(data);
+          set({ user: updated, isLoading: false });
+        }
+        catch (error: any) {
+          const message = error?.response?.data?.message || "Update profile failed";
+          set({ error: message, isLoading: false });
+          throw error;
+        }
+      },
     }),
     {
       name: "auth-storage",

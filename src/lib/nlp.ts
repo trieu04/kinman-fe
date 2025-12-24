@@ -63,9 +63,11 @@ export function parseExpenseText(text: string): NlpParseResult {
   let extractedAmount: number | undefined;
   let extractedDate: Date | undefined;
 
-  // Find dates
-  for (const datePattern of DATE_PATTERNS) {
+  // Find dates - check each pattern and keep the first exact match
+  for (let i = 0; i < DATE_PATTERNS.length; i++) {
+    const datePattern = DATE_PATTERNS[i];
     const match = text.match(datePattern.pattern);
+    
     if (match) {
       const date = datePattern.getValue(match[0]);
       entities.push({
@@ -126,8 +128,14 @@ export function formatCurrency(amount: number, currency = "VND"): string {
 
 // Helper to format relative dates
 export function formatRelativeDate(date: Date): string {
-  const now = new Date();
-  const diffDays = Math.floor((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  // Reset both dates to midnight to avoid time-based mismatches
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const checkDate = new Date(date);
+  checkDate.setHours(0, 0, 0, 0);
+  
+  const diffDays = Math.floor((checkDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
   if (diffDays === 0)
     return "Today";

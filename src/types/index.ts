@@ -117,7 +117,7 @@ export interface CreateGroupDto {
 }
 
 // ========== Group Expense ==========
-export type SplitType = "EQUAL" | "EXACT";
+export type SplitType = "equal" | "exact";
 
 export interface ExpenseSplit {
   userId: string;
@@ -130,7 +130,7 @@ export interface GroupExpense {
   description: string;
   date: string;
   splitType: SplitType;
-  paidBy: User;
+  payer: User;
   splits: ExpenseSplit[];
 }
 
@@ -140,6 +140,7 @@ export interface CreateGroupExpenseDto {
   date?: string;
   splitType: SplitType;
   splits?: ExpenseSplit[];
+  paidBy?: string; // User ID who paid for this expense
 }
 
 // ========== Debts ==========
@@ -150,6 +151,7 @@ export interface Debt {
 }
 
 export interface SettleUpDto {
+  fromUserId: string;
   toUserId: string;
   amount: number;
 }
@@ -166,6 +168,12 @@ export interface MonthlyTrend {
   month: number;
   year: number;
   total: number;
+}
+
+export interface DailyTrend {
+  date: string; // ISO date (yyyy-mm-dd)
+  total: number;
+  count: number;
 }
 
 // ========== NLP Parsing ==========
