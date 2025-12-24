@@ -11,6 +11,7 @@ import {
   ChevronDown,
   Menu,
   X,
+  BarChart3,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { ThemeToggle } from "../ui/theme-toggle";
@@ -47,6 +48,7 @@ export function Navbar({ onQuickAddClick }: NavbarProps) {
     { to: "/", icon: LayoutDashboard, label: "Dashboard" },
     { to: "/transactions", icon: Receipt, label: "Transaction" },
     { to: "/groups", icon: Users, label: "Groups" },
+    { to: "/reports/user", icon: BarChart3, label: "Report" },
     { to: "/settings", icon: Settings, label: "Settings" },
   ];
 
@@ -140,11 +142,11 @@ export function Navbar({ onQuickAddClick }: NavbarProps) {
               >
                 {showMobileMenu
                   ? (
-                      <X className="w-5 h-5" />
-                    )
+                    <X className="w-5 h-5" />
+                  )
                   : (
-                      <Menu className="w-5 h-5" />
-                    )}
+                    <Menu className="w-5 h-5" />
+                  )}
               </button>
             </div>
           </div>
