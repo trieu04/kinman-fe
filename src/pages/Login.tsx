@@ -1,28 +1,29 @@
-import * as React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, Lock, Loader2, Wallet } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { useAuthStore } from "../stores/authStore";
+import bgImage from "../assets/images/bg1.png";
+import { loginSchema, type LoginFormData } from "../lib/validationSchemas";
+import type { SignInDto } from "../types";
 
 export function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { signIn, isLoading, error, clearError } = useAuthStore();
-
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: "onBlur",
+  });
 
   const from = location.state?.from?.pathname || "/";
 
-  React.useEffect(() => {
+  const onSubmit = async (data: LoginFormData) => {
     clearError();
-  }, [clearError]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
     try {
-      await signIn({ username, password });
+      await signIn(data as SignInDto);
       navigate(from, { replace: true });
     }
     catch {
@@ -31,7 +32,16 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div
+      className="min-h-screen flex items-center justify-center bg-background p-4"
+      style={{
+        backgroundImage: `url(${bgImage})`,
+        backgroundSize: "100% 100%",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
+    >
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse" />
@@ -54,7 +64,7 @@ export function Login() {
         </CardHeader>
 
         <CardContent className="pt-2">
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {error && (
               <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium">
                 {error}
@@ -69,15 +79,16 @@ export function Login() {
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input
                   id="username"
-                  type="username"
-                  value={username}
-                  onChange={e => setUsername(e.target.value)}
+                  type="text"
                   placeholder="name@example.com"
                   className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
-                  required
                   autoComplete="username"
+                  {...register("username")}
                 />
               </div>
+              {errors.username && (
+                <span className="text-xs text-destructive">{errors.username.message}</span>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -89,14 +100,15 @@ export function Login() {
                 <input
                   id="password"
                   type="password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
-                  required
                   autoComplete="current-password"
+                  {...register("password")}
                 />
               </div>
+              {errors.password && (
+                <span className="text-xs text-destructive">{errors.password.message}</span>
+              )}
             </div>
 
             <Button

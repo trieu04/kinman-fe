@@ -1,41 +1,27 @@
-import * as React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, Lock, User, AtSign, Loader2, Wallet } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { useAuthStore } from "../stores/authStore";
+import bgImage from "../assets/images/bg1.png";
+import { signupSchema, type SignupFormData } from "../lib/validationSchemas";
+import type { SignUpDto } from "../types";
 
 export function Signup() {
   const navigate = useNavigate();
   const { signUp, isLoading, error, clearError } = useAuthStore();
+  const { register, handleSubmit, formState: { errors } } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+    mode: "onBlur",
+  });
 
-  const [name, setName] = React.useState("");
-  const [username, setUsername] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [confirmPassword, setConfirmPassword] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState("");
-
-  React.useEffect(() => {
+  const onSubmit = async (data: SignupFormData) => {
     clearError();
-  }, [clearError]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setPasswordError("");
-
-    if (password !== confirmPassword) {
-      setPasswordError("Mật khẩu không khớp");
-      return;
-    }
-
-    if (password.length < 6) {
-      setPasswordError("Mật khẩu phải có ít nhất 6 ký tự");
-      return;
-    }
-
+    const { confirmPassword, ...signupData } = data;
     try {
-      await signUp({ email, password, username, name });
+      await signUp(signupData as SignUpDto);
       navigate("/", { replace: true });
     }
     catch {
@@ -44,7 +30,16 @@ export function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div
+      className="min-h-screen flex items-center justify-center bg-background p-4"
+      style={{
+        backgroundImage: `url(${bgImage})`,
+        backgroundSize: "100% 100%",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
+    >
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse" />
@@ -67,10 +62,10 @@ export function Signup() {
         </CardHeader>
 
         <CardContent className="pt-2">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {(error || passwordError) && (
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {error && (
               <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium">
-                {error || passwordError}
+                {error}
               </div>
             )}
 
@@ -83,13 +78,15 @@ export function Signup() {
                 <input
                   id="name"
                   type="text"
-                  value={name}
-                  onChange={e => setName(e.target.value)}
                   placeholder="Nguyễn Văn A"
                   className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
                   autoComplete="name"
+                  {...register("name")}
                 />
               </div>
+              {errors.name && (
+                <span className="text-xs text-destructive">{errors.name.message}</span>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -103,14 +100,15 @@ export function Signup() {
                 <input
                   id="username"
                   type="text"
-                  value={username}
-                  onChange={e => setUsername(e.target.value)}
                   placeholder="username"
                   className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
-                  required
                   autoComplete="username"
+                  {...register("username")}
                 />
               </div>
+              {errors.username && (
+                <span className="text-xs text-destructive">{errors.username.message}</span>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -124,14 +122,15 @@ export function Signup() {
                 <input
                   id="email"
                   type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
                   placeholder="name@example.com"
                   className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
-                  required
                   autoComplete="email"
+                  {...register("email")}
                 />
               </div>
+              {errors.email && (
+                <span className="text-xs text-destructive">{errors.email.message}</span>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -145,14 +144,15 @@ export function Signup() {
                 <input
                   id="password"
                   type="password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
-                  required
                   autoComplete="new-password"
+                  {...register("password")}
                 />
               </div>
+              {errors.password && (
+                <span className="text-xs text-destructive">{errors.password.message}</span>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -166,14 +166,15 @@ export function Signup() {
                 <input
                   id="confirmPassword"
                   type="password"
-                  value={confirmPassword}
-                  onChange={e => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
-                  required
                   autoComplete="new-password"
+                  {...register("confirmPassword")}
                 />
               </div>
+              {errors.confirmPassword && (
+                <span className="text-xs text-destructive">{errors.confirmPassword.message}</span>
+              )}
             </div>
 
             <Button
