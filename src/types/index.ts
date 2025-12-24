@@ -117,7 +117,7 @@ export interface CreateGroupDto {
 }
 
 // ========== Group Expense ==========
-export type SplitType = "EQUAL" | "EXACT";
+export type SplitType = "equal" | "exact";
 
 export interface ExpenseSplit {
   userId: string;

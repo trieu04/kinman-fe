@@ -23,7 +23,7 @@ interface SplitBillFormProps {
 export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess }: SplitBillFormProps) {
   const [description, setDescription] = React.useState("");
   const [amount, setAmount] = React.useState("");
-  const [splitType, setSplitType] = React.useState<SplitType>("EQUAL" as SplitType);
+  const [splitType, setSplitType] = React.useState<SplitType>("equal" as SplitType);
   const [selectedMembers, setSelectedMembers] = React.useState<string[]>([]);
   const [exactAmounts, setExactAmounts] = React.useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -31,7 +31,10 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
   // Auto-select all members
   React.useEffect(() => {
     if (members.length > 0) {
-      setSelectedMembers(members.map(m => m.userId));
+      const memberIds = members
+        .filter(m => m.userId || m.user?.id) // Filter out empty ones
+        .map(m => m.userId || m.user?.id || "");
+      setSelectedMembers(memberIds);
     }
   }, [members]);
 
@@ -56,12 +59,14 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
 
     setIsSubmitting(true);
     try {
-      const splits: ExpenseSplit[] = selectedMembers.map(userId => ({
-        userId,
-        amount: splitType === "EQUAL"
-          ? equalShare
-          : Number.parseFloat(exactAmounts[userId]) || 0,
-      }));
+      const splits: ExpenseSplit[] = selectedMembers
+        .filter(id => id && id.trim() !== "") // Filter out empty IDs
+        .map(userId => ({
+          userId,
+          amount: splitType === "equal"
+            ? equalShare
+            : Number.parseFloat(exactAmounts[userId]) || 0,
+        }));
 
       await groupService.addExpense(groupId, {
         amount: totalAmount,
@@ -73,14 +78,15 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
       // Reset form
       setDescription("");
       setAmount("");
-      setSplitType("EQUAL" as SplitType);
+      setSplitType("equal" as SplitType);
       setExactAmounts({});
 
       onOpenChange(false);
       onSuccess?.();
     }
-    catch (error) {
+    catch (error: any) {
       console.error("Failed to add expense:", error);
+      // console.error("Response data:", error?.response?.data);
     }
     finally {
       setIsSubmitting(false);
@@ -140,8 +146,8 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
             <div className="flex gap-2">
               <button
                 type="button"
-                onClick={() => setSplitType("EQUAL" as SplitType)}
-                className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors cursor-pointer ${splitType === "EQUAL"
+                onClick={() => setSplitType("equal" as SplitType)}
+                className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors cursor-pointer ${splitType === "equal"
                   ? "bg-primary text-white"
                   : "bg-muted text-muted-foreground hover:bg-accent"
                 }`}
@@ -150,8 +156,8 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
               </button>
               <button
                 type="button"
-                onClick={() => setSplitType("EXACT" as SplitType)}
-                className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors cursor-pointer ${splitType === "EXACT"
+                onClick={() => setSplitType("exact" as SplitType)}
+                className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors cursor-pointer ${splitType === "exact"
                   ? "bg-primary text-white"
                   : "bg-muted text-muted-foreground hover:bg-accent"
                 }`}
@@ -172,21 +178,23 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
             </label>
             <div className="space-y-2 max-h-[200px] overflow-y-auto">
               {members.map((member) => {
-                const isSelected = selectedMembers.includes(member.userId);
+                const memberId = member.userId || member.user?.id || "";
+                const isSelected = selectedMembers.includes(memberId);
                 return (
                   <div
                     key={member.id}
-                    className={`flex items-center justify-between p-3 rounded-lg border transition-colors cursor-pointer ${isSelected
-                      ? "border-primary bg-primary/5"
-                      : "border-border hover:border-muted-foreground"
+                    className={`flex items-center justify-between p-3 rounded-lg border transition-colors cursor-pointer ${
+                      isSelected
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-muted-foreground"
                     }`}
-                    onClick={() => splitType === "EQUAL" && toggleMember(member.userId)}
+                    onClick={() => splitType === "equal" && toggleMember(memberId)}
                   >
                     <div className="flex items-center gap-3">
                       <input
                         type="checkbox"
                         checked={isSelected}
-                        onChange={() => toggleMember(member.userId)}
+                        onChange={() => toggleMember(memberId)}
                         className="w-4 h-4 cursor-pointer"
                         onClick={e => e.stopPropagation()}
                       />
@@ -196,7 +204,7 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
                       <span className="font-medium">{member.user?.name || member.user?.username}</span>
                     </div>
 
-                    {splitType === "EQUAL"
+                    {splitType === "equal"
                       ? (
                           <span className={`font-semibold ${isSelected ? "text-foreground" : "text-muted-foreground"}`}>
                             {isSelected && totalAmount > 0 ? formatCurrency(equalShare) : "-"}
@@ -205,11 +213,11 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
                       : (
                           <input
                             type="number"
-                            value={exactAmounts[member.userId] || ""}
+                            value={exactAmounts[memberId] || ""}
                             onChange={(e) => {
-                              setExactAmounts(prev => ({ ...prev, [member.userId]: e.target.value }));
-                              if (!selectedMembers.includes(member.userId) && e.target.value) {
-                                setSelectedMembers(prev => [...prev, member.userId]);
+                              setExactAmounts(prev => ({ ...prev, [memberId]: e.target.value }));
+                              if (!selectedMembers.includes(memberId) && e.target.value) {
+                                setSelectedMembers(prev => [...prev, memberId]);
                               }
                             }}
                             onClick={e => e.stopPropagation()}
@@ -224,7 +232,7 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
           </div>
 
           {/* Exact Amount Summary */}
-          {splitType === "EXACT" && (
+          {splitType === "exact" && (
             <div className={`p-3 rounded-lg ${exactRemaining === 0 ? "bg-success/10" : "bg-warning/10"}`}>
               <div className="flex justify-between text-sm">
                 <span>Assigned:</span>
@@ -246,7 +254,7 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
                 <span className="text-sm text-muted-foreground">Total Amount</span>
                 <span className="text-xl font-bold">{formatCurrency(totalAmount)}</span>
               </div>
-              {splitType === "EQUAL" && selectedCount > 0 && (
+              {splitType === "equal" && selectedCount > 0 && (
                 <div className="flex items-center justify-between mt-1">
                   <span className="text-xs text-muted-foreground">
                     Per person (
@@ -272,7 +280,7 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
               || !description.trim()
               || totalAmount <= 0
               || selectedMembers.length === 0
-              || (splitType === "EXACT" && Math.abs(exactRemaining) > 0.01)
+              || (splitType === "exact" && Math.abs(exactRemaining) > 0.01)
             }
           >
             {isSubmitting ? "Adding..." : "Add Expense"}
