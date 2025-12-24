@@ -560,10 +560,6 @@ export function Dashboard() {
                             </p>
                           </div>
                         </div>
-                        <span className={`font-semibold stat-number ${tx.amount < 0 ? "text-destructive" : "text-success"}`}>
-                          {tx.amount < 0 ? "-" : "+"}
-                          {formatCurrency(Math.abs(tx.amount))}
-                        </span>
                       </div>
                       </motion.div>
                     ))
@@ -573,7 +569,14 @@ export function Dashboard() {
                       <p>No transactions yet</p>
                       <p className="text-sm">Click "Quick Add" to add your first expense</p>
                     </div>
-                  )}
+                  ))
+                )
+                : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>No transactions yet</p>
+                    <p className="text-sm">Click "Quick Add" to add your first expense</p>
+                  </div>
+                )}
             </div>
           </CardContent>
         </Card>
