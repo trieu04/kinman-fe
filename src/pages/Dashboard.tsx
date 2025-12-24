@@ -158,54 +158,54 @@ export function Dashboard() {
             <div className="h-[320px]">
               {chartData.length > 0
                 ? (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={chartData}>
-                        <defs>
-                          <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#6366F1" stopOpacity={0.3} />
-                            <stop offset="95%" stopColor="#6366F1" stopOpacity={0} />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
-                        <XAxis
-                          dataKey="name"
-                          className="text-xs fill-muted-foreground"
-                          axisLine={false}
-                          tickLine={false}
-                          dy={10}
-                        />
-                        <YAxis
-                          className="text-xs fill-muted-foreground"
-                          tickFormatter={value => `${(value / 1000000).toFixed(0)}M`}
-                          axisLine={false}
-                          tickLine={false}
-                          dx={-10}
-                        />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "var(--color-card)",
-                            border: "1px solid var(--color-border)",
-                            borderRadius: "12px",
-                            boxShadow: "0 10px 40px -10px rgba(0,0,0,0.2)",
-                          }}
-                          formatter={(value: number) => [formatCurrency(value), "Amount"]}
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="amount"
-                          stroke="#6366F1"
-                          strokeWidth={2.5}
-                          fillOpacity={1}
-                          fill="url(#colorAmount)"
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  )
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={chartData}>
+                      <defs>
+                        <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#6366F1" stopOpacity={0.3} />
+                          <stop offset="95%" stopColor="#6366F1" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
+                      <XAxis
+                        dataKey="name"
+                        className="text-xs fill-muted-foreground"
+                        axisLine={false}
+                        tickLine={false}
+                        dy={10}
+                      />
+                      <YAxis
+                        className="text-xs fill-muted-foreground"
+                        tickFormatter={value => `${(value / 1000000).toFixed(0)}M`}
+                        axisLine={false}
+                        tickLine={false}
+                        dx={-10}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "var(--color-card)",
+                          border: "1px solid var(--color-border)",
+                          borderRadius: "12px",
+                          boxShadow: "0 10px 40px -10px rgba(0,0,0,0.2)",
+                        }}
+                        formatter={(value: number | undefined) => [value !== undefined ? formatCurrency(value) : "N/A", "Amount"]}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="amount"
+                        stroke="#6366F1"
+                        strokeWidth={2.5}
+                        fillOpacity={1}
+                        fill="url(#colorAmount)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                )
                 : (
-                    <div className="h-full flex items-center justify-center text-muted-foreground">
-                      No data available. Add some transactions to see your spending trend.
-                    </div>
-                  )}
+                  <div className="h-full flex items-center justify-center text-muted-foreground">
+                    No data available. Add some transactions to see your spending trend.
+                  </div>
+                )}
             </div>
           </CardContent>
         </Card>
@@ -220,37 +220,37 @@ export function Dashboard() {
             <div className="space-y-4">
               {recentTransactions.length > 0
                 ? (
-                    recentTransactions.map(tx => (
-                      <div
-                        key={tx.id}
-                        className="flex items-center justify-between p-3.5 rounded-xl bg-muted/40 hover:bg-muted/70 cursor-pointer transition-all duration-200 group"
-                      >
-                        <div className="flex items-center gap-3.5">
-                          <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center text-base group-hover:scale-105 transition-transform duration-200">
-                            {tx.category?.icon || "💰"}
-                          </div>
-                          <div>
-                            <p className="font-medium text-sm">
-                              {tx.note || tx.category?.name || "Uncategorized"}
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-0.5">
-                              {format(new Date(tx.date), "MMM d, yyyy")}
-                            </p>
-                          </div>
+                  recentTransactions.map(tx => (
+                    <div
+                      key={tx.id}
+                      className="flex items-center justify-between p-3.5 rounded-xl bg-muted/40 hover:bg-muted/70 cursor-pointer transition-all duration-200 group"
+                    >
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center text-base group-hover:scale-105 transition-transform duration-200">
+                          {tx.category?.icon || "💰"}
                         </div>
-                        <span className={`font-semibold stat-number ${tx.amount < 0 ? "text-destructive" : "text-success"}`}>
-                          {tx.amount < 0 ? "-" : "+"}
-                          {formatCurrency(Math.abs(tx.amount))}
-                        </span>
+                        <div>
+                          <p className="font-medium text-sm">
+                            {tx.note || tx.category?.name || "Uncategorized"}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {format(new Date(tx.date), "MMM d, yyyy")}
+                          </p>
+                        </div>
                       </div>
-                    ))
-                  )
-                : (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <p>No transactions yet</p>
-                      <p className="text-sm">Click "Quick Add" to add your first expense</p>
+                      <span className={`font-semibold stat-number ${tx.amount < 0 ? "text-destructive" : "text-success"}`}>
+                        {tx.amount < 0 ? "-" : "+"}
+                        {formatCurrency(Math.abs(tx.amount))}
+                      </span>
                     </div>
-                  )}
+                  ))
+                )
+                : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>No transactions yet</p>
+                    <p className="text-sm">Click "Quick Add" to add your first expense</p>
+                  </div>
+                )}
             </div>
           </CardContent>
         </Card>
