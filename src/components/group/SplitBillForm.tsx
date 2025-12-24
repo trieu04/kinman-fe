@@ -26,6 +26,7 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
   const [splitType, setSplitType] = React.useState<SplitType>("equal" as SplitType);
   const [selectedMembers, setSelectedMembers] = React.useState<string[]>([]);
   const [exactAmounts, setExactAmounts] = React.useState<Record<string, string>>({});
+  const [paidBy, setPaidBy] = React.useState<string>(""); // Who paid for this expense
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   // Auto-select all members
@@ -35,8 +36,13 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
         .filter(m => m.userId || m.user?.id) // Filter out empty ones
         .map(m => m.userId || m.user?.id || "");
       setSelectedMembers(memberIds);
+      
+      // Set first member as default payer if not already set
+      if (!paidBy && memberIds.length > 0) {
+        setPaidBy(memberIds[0]);
+      }
     }
-  }, [members]);
+  }, [members, paidBy]);
 
   const totalAmount = Number.parseFloat(amount) || 0;
   const selectedCount = selectedMembers.length;
@@ -59,12 +65,17 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
 
     setIsSubmitting(true);
     try {
-      const splits: ExpenseSplit[] = selectedMembers
-        .filter(id => id && id.trim() !== "") // Filter out empty IDs
+      // Ensure payer is always included in splits for equal split
+      let membersToSplit = selectedMembers.filter(id => id && id.trim() !== "");
+      if (splitType === "equal" && paidBy && !membersToSplit.includes(paidBy)) {
+        membersToSplit = [...membersToSplit, paidBy];
+      }
+
+      const splits: ExpenseSplit[] = membersToSplit
         .map(userId => ({
           userId,
           amount: splitType === "equal"
-            ? equalShare
+            ? totalAmount / membersToSplit.length
             : Number.parseFloat(exactAmounts[userId]) || 0,
         }));
 
@@ -73,6 +84,7 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
         description: description.trim(),
         splitType,
         splits,
+        paidBy: paidBy || undefined, // Include who paid
       });
 
       // Reset form
@@ -80,6 +92,7 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
       setAmount("");
       setSplitType("equal" as SplitType);
       setExactAmounts({});
+      setPaidBy("");
 
       onOpenChange(false);
       onSuccess?.();
@@ -115,6 +128,26 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
         </DialogHeader>
 
         <div className="space-y-4 py-4">
+          {/* Paid By */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Paid By</label>
+            <select
+              value={paidBy}
+              onChange={e => setPaidBy(e.target.value)}
+              className="w-full h-10 px-3 rounded-md border border-border bg-card text-sm"
+            >
+              <option value="">Select who paid...</option>
+              {members.map((member) => {
+                const memberId = member.userId || member.user?.id || "";
+                return (
+                  <option key={member.id} value={memberId}>
+                    {member.user?.name || member.user?.username || "Unknown"}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
           {/* Description */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Description</label>
@@ -277,8 +310,7 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
             onClick={handleSubmit}
             disabled={
               isSubmitting
-              || !description.trim()
-              || totalAmount <= 0
+              || !description.trim()              || !paidBy              || totalAmount <= 0
               || selectedMembers.length === 0
               || (splitType === "exact" && Math.abs(exactRemaining) > 0.01)
             }

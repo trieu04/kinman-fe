@@ -57,12 +57,20 @@ export function GroupDetail() {
   const handleSettleUp = async (debt: Debt) => {
     if (!id)
       return;
+    
+    const confirmed = window.confirm(
+      `Confirm that ${debt.from.name || debt.from.username} has paid ${formatCurrency(debt.amount)} to ${debt.to.name || debt.to.username}?`
+    );
+    
+    if (!confirmed) return;
+    
     try {
-      await groupService.settleUp(id, { toUserId: debt.to.id, amount: debt.amount });
+      await groupService.settleUp(id, { fromUserId: debt.from.id, toUserId: debt.to.id, amount: debt.amount });
       await fetchGroupData(); // Refresh debts
     }
     catch (error) {
       console.error("Failed to settle up:", error);
+      alert("Failed to record settlement. Please try again.");
     }
   };
 
@@ -139,11 +147,11 @@ export function GroupDetail() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
         >
-        <Card>
+        <Card className="h-full flex flex-col">
           <CardHeader>
             <CardTitle className="text-lg">Members</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-3 overflow-y-auto flex-1 max-h-[500px]">
             {group.members?.map(member => (
               <div key={member.id} className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
@@ -165,7 +173,7 @@ export function GroupDetail() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
         >
-        <Card>
+        <Card className="h-full flex flex-col">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <CreditCard className="w-5 h-5" />
@@ -173,31 +181,52 @@ export function GroupDetail() {
             </CardTitle>
             <CardDescription>Who owes whom</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-3 overflow-y-auto flex-1 max-h-[500px]">
             {debts.length > 0
               ? (
                   debts.map((debt, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                      <div>
-                        <p className="text-sm">
-                          <span className="font-medium">{debt.from.name || debt.from.username}</span>
-                          <span className="text-muted-foreground"> owes </span>
-                          <span className="font-medium">{debt.to.name || debt.to.username}</span>
-                        </p>
-                        <p className="text-lg font-bold text-destructive">
-                          {formatCurrency(debt.amount)}
-                        </p>
+                    <div key={i} className="p-4 rounded-lg bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20 border border-red-200 dark:border-red-800">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white text-sm font-medium">
+                              {debt.from.name?.charAt(0)?.toUpperCase() || debt.from.username?.charAt(0)?.toUpperCase() || "?"}
+                            </div>
+                            <span className="text-sm text-muted-foreground">→</span>
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center text-white text-sm font-medium">
+                              {debt.to.name?.charAt(0)?.toUpperCase() || debt.to.username?.charAt(0)?.toUpperCase() || "?"}
+                            </div>
+                          </div>
+                          <p className="text-sm leading-relaxed">
+                            <span className="font-semibold text-foreground">{debt.from.name || debt.from.username}</span>
+                            <span className="text-muted-foreground"> owes </span>
+                            <span className="font-semibold text-foreground">{debt.to.name || debt.to.username}</span>
+                          </p>
+                          <p className="text-2xl font-bold text-red-600 dark:text-red-400 mt-1">
+                            {formatCurrency(debt.amount)}
+                          </p>
+                        </div>
+                        <Button 
+                          size="sm" 
+                          className="shrink-0 bg-green-600 hover:bg-green-700 text-white"
+                          onClick={() => handleSettleUp(debt)}
+                        >
+                          Settle
+                        </Button>
                       </div>
-                      <Button size="sm" variant="outline" onClick={() => handleSettleUp(debt)}>
-                        Settle
-                      </Button>
                     </div>
                   ))
                 )
               : (
-                  <p className="text-center py-4 text-muted-foreground">
-                    All settled up! 🎉
-                  </p>
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                      <span className="text-3xl">🎉</span>
+                    </div>
+                    <p className="font-medium text-foreground">All settled up!</p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      No outstanding debts
+                    </p>
+                  </div>
                 )}
           </CardContent>
         </Card>
@@ -210,7 +239,7 @@ export function GroupDetail() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.35, ease: "easeOut" }}
         >
-        <Card>
+        <Card className="h-full flex flex-col">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <Receipt className="w-5 h-5" />
@@ -222,7 +251,7 @@ export function GroupDetail() {
               total expenses
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3 max-h-[400px] overflow-y-auto">
+          <CardContent className="space-y-3 overflow-y-auto flex-1 max-h-[500px]">
             {expenses.length > 0
               ? (
                   expenses.map((expense, idx) => (
@@ -232,20 +261,21 @@ export function GroupDetail() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}
                     >
-                    <div className="p-3 rounded-lg bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors">
-                      <div className="flex items-center justify-between">
-                        <p className="font-medium">{expense.description}</p>
-                        <Badge variant={expense.splitType === "equal" ? "secondary" : "outline"}>
-                          {expense.splitType}
-                        </Badge>
+                    <div className="p-3 rounded-lg bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors border border-border/50">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="font-medium text-foreground">{expense.description}</p>
+                        <p className="font-bold text-lg">{formatCurrency(expense.amount)}</p>
                       </div>
-                      <div className="flex items-center justify-between mt-1">
-                        <p className="text-xs text-muted-foreground">
-                          Paid by
-                          {" "}
-                          {expense.paidBy?.name || expense.paidBy?.username}
-                        </p>
-                        <p className="font-semibold">{formatCurrency(expense.amount)}</p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Badge variant={expense.splitType === "equal" ? "default" : "secondary"} className="text-xs">
+                            {expense.splitType === "equal" ? "Equal Split" : "Exact Amount"}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">•</span>
+                          <p className="text-xs text-muted-foreground">
+                            Paid by {expense.payer?.name || expense.payer?.username}
+                          </p>
+                        </div>
                       </div>
                     </div>
                     </motion.div>
