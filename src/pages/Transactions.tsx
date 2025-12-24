@@ -94,10 +94,6 @@ export function Transactions() {
     .filter(t => Number(t.amount) < 0)
     .reduce((sum, t) => sum + Math.abs(Number(t.amount)), 0);
 
-  const totalIncome = filteredTransactions
-    .filter(t => Number(t.amount) > 0)
-    .reduce((sum, t) => sum + Number(t.amount), 0);
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -120,7 +116,7 @@ export function Transactions() {
       </motion.div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
@@ -149,22 +145,7 @@ export function Transactions() {
           </CardContent>
         </Card>
         </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.35, ease: "easeOut" }}
-        >
-        <Card className="bg-gradient-to-br from-card to-success/5">
-          <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground font-medium">Total Income</p>
-            <p className="text-3xl font-bold text-success mt-2 stat-number">
-              +
-              {formatCurrency(totalIncome)}
-            </p>
-          </CardContent>
-        </Card>
-        </motion.div>
+        {/* Total Income card removed */}
       </div>
 
       {/* Filters */}

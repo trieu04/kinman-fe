@@ -116,7 +116,7 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Calculator className="w-5 h-5" />
@@ -127,7 +127,7 @@ export function SplitBillForm({ open, onOpenChange, groupId, members, onSuccess 
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
+        <div className="space-y-4 py-4 overflow-y-auto flex-1">
           {/* Paid By */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Paid By</label>
