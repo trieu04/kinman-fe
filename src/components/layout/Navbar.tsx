@@ -18,9 +18,10 @@ import { useAuthStore } from "../../stores/authStore";
 
 interface NavbarProps {
   onQuickAddClick: () => void;
+  onHomeClick?: () => void;
 }
 
-export function Navbar({ onQuickAddClick }: NavbarProps) {
+export function Navbar({ onQuickAddClick, onHomeClick }: NavbarProps) {
   const navigate = useNavigate();
   const { user, signOut } = useAuthStore();
   const [showUserMenu, setShowUserMenu] = React.useState(false);
@@ -56,11 +57,12 @@ export function Navbar({ onQuickAddClick }: NavbarProps) {
         <div className="backdrop-blur-2xl bg-card/75 border border-border/50 rounded-2xl shadow-lg shadow-black/5 px-5 py-3.5">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <NavLink to="/" className="flex items-center gap-3 cursor-pointer group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center shadow-lg shadow-primary/25 group-hover:shadow-xl group-hover:shadow-primary/30 transition-all duration-300">
+            <NavLink to="/" className="flex items-center gap-3 cursor-pointer group" onClick={onHomeClick}
+            >
+              <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary to-amber-500 flex items-center justify-center shadow-lg shadow-primary/25 group-hover:shadow-xl group-hover:shadow-primary/30 transition-all duration-300">
                 <Wallet className="w-5 h-5 text-white" />
               </div>
-              <span className="text-lg font-bold hidden sm:block bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text">KinMan</span>
+              <span className="text-lg font-bold hidden sm:block bg-linear-to-r from-foreground to-muted-foreground bg-clip-text">KinMan</span>
             </NavLink>
 
             {/* Desktop Navigation */}
@@ -87,7 +89,7 @@ export function Navbar({ onQuickAddClick }: NavbarProps) {
               {/* Quick Add Button */}
               <Button
                 onClick={onQuickAddClick}
-                className="bg-gradient-to-r from-primary to-amber-500 hover:opacity-90 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 border-0"
+                className="bg-linear-to-r from-primary to-amber-500 hover:opacity-90 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 border-0"
                 size="sm"
               >
                 <Plus className="w-4 h-4 mr-1" />
@@ -103,7 +105,7 @@ export function Navbar({ onQuickAddClick }: NavbarProps) {
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
                 >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-medium">
+                  <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-medium">
                     {user?.name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "U"}
                   </div>
                   <ChevronDown className="w-4 h-4 text-muted-foreground hidden sm:block" />
