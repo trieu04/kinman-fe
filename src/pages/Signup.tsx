@@ -8,6 +8,7 @@ import { useAuthStore } from "../stores/authStore";
 import bgImage from "../assets/images/bg1.png";
 import { signupSchema, type SignupFormData } from "../lib/validationSchemas";
 import type { SignUpDto } from "../types";
+import { SeasonalDecor } from "../components/effects/SeasonalDecor";
 
 export function Signup() {
   const navigate = useNavigate();
@@ -40,17 +41,19 @@ export function Signup() {
         backgroundAttachment: "fixed",
       }}
     >
-      {/* Background decorative elements */}
+      {/* Trang trí mùa lễ trên trang đăng ký */}
+      <SeasonalDecor />
+      {/* Phần tử trang trí nền */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse" />
         <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-primary/5 rounded-full blur-3xl" />
       </div>
 
       <Card className="w-full max-w-md relative backdrop-blur-xl bg-card/80 border-border/50 shadow-2xl">
         <CardHeader className="text-center space-y-6 pb-2">
-          {/* Logo */}
-          <div className="mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center shadow-2xl shadow-primary/30">
+          {/* Biểu tượng (Logo) */}
+          <div className="mx-auto w-20 h-20 rounded-2xl bg-linear-to-br from-primary to-amber-500 flex items-center justify-center shadow-2xl shadow-primary/30">
             <Wallet className="w-10 h-10 text-white" />
           </div>
           <div className="space-y-2">
@@ -179,7 +182,7 @@ export function Signup() {
 
             <Button
               type="submit"
-              className="w-full h-12 bg-gradient-to-r from-primary to-amber-500 hover:opacity-90 text-base font-semibold shadow-lg shadow-primary/25 mt-2"
+              className="w-full h-12 bg-linear-to-r from-primary to-amber-500 hover:opacity-90 text-base font-semibold shadow-lg shadow-primary/25 mt-2"
               disabled={isLoading}
             >
               {isLoading
