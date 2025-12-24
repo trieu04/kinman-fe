@@ -1,5 +1,5 @@
 import api from "./api";
-import type { CategoryBreakdown, MonthlyTrend } from "../types";
+import type { CategoryBreakdown, DailyTrend, MonthlyTrend } from "../types";
 
 export const reportService = {
   getCategoryBreakdown: async (year?: number, month?: number): Promise<CategoryBreakdown[]> => {
@@ -19,6 +19,17 @@ export const reportService = {
       params.year = year;
 
     const response = await api.get<MonthlyTrend[]>("/reports/monthly-trend", { params });
+    return response.data;
+  },
+
+  getDailyTrend: async (startDate?: string, endDate?: string): Promise<DailyTrend[]> => {
+    const params: Record<string, string> = {};
+    if (startDate)
+      params.startDate = startDate;
+    if (endDate)
+      params.endDate = endDate;
+
+    const response = await api.get<DailyTrend[]>("/reports/daily-trend", { params });
     return response.data;
   },
 };

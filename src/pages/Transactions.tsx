@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Trash2, Edit, Search } from "lucide-react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
@@ -10,17 +11,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import { EditTransactionModal } from "../components/expense/EditTransactionModal";
 import transactionService from "../services/transactionService";
 import { useExpenseStore } from "../stores/expenseStore";
 import type { Transaction, TransactionFilter } from "../types";
 import { format } from "date-fns";
 
 export function Transactions() {
-  const { categories, wallets, fetchCategories, fetchWallets } = useExpenseStore();
+  const { categories, wallets, fetchCategories, fetchWallets, refreshTrigger, triggerRefresh } = useExpenseStore();
   const [transactions, setTransactions] = React.useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [filter, setFilter] = React.useState<TransactionFilter>({});
   const [searchText, setSearchText] = React.useState("");
+  const [editingTransaction, setEditingTransaction] = React.useState<Transaction | null>(null);
+  const [editModalOpen, setEditModalOpen] = React.useState(false);
 
   const fetchTransactions = async () => {
     setIsLoading(true);
@@ -44,7 +48,7 @@ export function Transactions() {
   React.useEffect(() => {
     fetchTransactions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]);
+  }, [filter, refreshTrigger]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this transaction?"))
@@ -52,10 +56,23 @@ export function Transactions() {
     try {
       await transactionService.delete(id);
       setTransactions(transactions.filter(t => t.id !== id));
+      triggerRefresh();
+      await fetchWallets();
     }
     catch (error) {
       console.error("Failed to delete transaction:", error);
     }
+  };
+
+  const handleEditClick = (tx: Transaction) => {
+    setEditingTransaction(tx);
+    setEditModalOpen(true);
+  };
+
+  const handleEditSuccess = () => {
+    fetchTransactions();
+    triggerRefresh();
+    fetchWallets();
   };
 
   const formatCurrency = (value: number) => {
@@ -74,12 +91,12 @@ export function Transactions() {
   );
 
   const totalExpense = filteredTransactions
-    .filter(t => t.amount < 0)
-    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+    .filter(t => Number(t.amount) < 0)
+    .reduce((sum, t) => sum + Math.abs(Number(t.amount)), 0);
 
   const totalIncome = filteredTransactions
-    .filter(t => t.amount > 0)
-    .reduce((sum, t) => sum + t.amount, 0);
+    .filter(t => Number(t.amount) > 0)
+    .reduce((sum, t) => sum + Number(t.amount), 0);
 
   if (isLoading) {
     return (
@@ -92,19 +109,36 @@ export function Transactions() {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div className="space-y-1">
+      <motion.div
+        className="space-y-1"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <h1 className="text-3xl font-bold tracking-tight">Transactions</h1>
         <p className="text-muted-foreground text-base">View and manage your expenses</p>
-      </div>
+      </motion.div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+        >
         <Card className="bg-gradient-to-br from-card to-muted/30">
           <CardContent className="pt-6">
             <p className="text-sm text-muted-foreground font-medium">Total Transactions</p>
             <p className="text-3xl font-bold mt-2 stat-number">{filteredTransactions.length}</p>
           </CardContent>
         </Card>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
+        >
         <Card className="bg-gradient-to-br from-card to-destructive/5">
           <CardContent className="pt-6">
             <p className="text-sm text-muted-foreground font-medium">Total Expenses</p>
@@ -114,6 +148,13 @@ export function Transactions() {
             </p>
           </CardContent>
         </Card>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.35, ease: "easeOut" }}
+        >
         <Card className="bg-gradient-to-br from-card to-success/5">
           <CardContent className="pt-6">
             <p className="text-sm text-muted-foreground font-medium">Total Income</p>
@@ -123,9 +164,15 @@ export function Transactions() {
             </p>
           </CardContent>
         </Card>
+        </motion.div>
       </div>
 
       {/* Filters */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.45, ease: "easeOut" }}
+      >
       <Card>
         <CardContent className="pt-6">
           <div className="flex flex-col lg:flex-row gap-4">
@@ -199,8 +246,14 @@ export function Transactions() {
           </div>
         </CardContent>
       </Card>
+      </motion.div>
 
       {/* Transactions List */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.55, ease: "easeOut" }}
+      >
       <Card>
         <CardHeader>
           <CardTitle>All Transactions</CardTitle>
@@ -214,9 +267,16 @@ export function Transactions() {
           <div className="space-y-2">
             {filteredTransactions.length > 0
               ? (
-                  filteredTransactions.map(tx => (
-                    <div
+                  filteredTransactions.map((tx, idx) => (
+                    <motion.div
                       key={tx.id}
+                      initial={{ opacity: 0, x: idx % 2 === 0 ? -30 : 30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.6, delay: idx * 0.08, ease: "easeOut" }}
+                      whileHover={{ x: idx % 2 === 0 ? 4 : -4, transition: { duration: 0.2 } }}
+                      className="rounded-lg"
+                    >
+                    <div
                       className="flex items-center justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group"
                     >
                       <div className="flex items-center gap-4">
@@ -253,7 +313,12 @@ export function Transactions() {
                           {formatCurrency(Math.abs(tx.amount))}
                         </span>
                         <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => handleEditClick(tx)}
+                          >
                             <Edit className="w-4 h-4" />
                           </Button>
                           <Button
@@ -267,17 +332,34 @@ export function Transactions() {
                         </div>
                       </div>
                     </div>
+                    </motion.div>
                   ))
                 )
               : (
-                  <div className="text-center py-12 text-muted-foreground">
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="text-center py-12 text-muted-foreground"
+                  >
                     <p>No transactions found</p>
                     <p className="text-sm">Try adjusting your filters or add a new transaction</p>
-                  </div>
+                  </motion.div>
                 )}
           </div>
         </CardContent>
       </Card>
+      </motion.div>
+
+      {/* Edit Modal */}
+      {editingTransaction && (
+        <EditTransactionModal
+          open={editModalOpen}
+          onOpenChange={setEditModalOpen}
+          transaction={editingTransaction}
+          onSuccess={handleEditSuccess}
+        />
+      )}
     </div>
   );
 }

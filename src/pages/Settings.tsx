@@ -1,4 +1,5 @@
 import * as React from "react";
+import { motion } from "framer-motion";
 import { User, Tag, Wallet, Plus, Trash2, Save, Loader2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
@@ -6,10 +7,10 @@ import { useAuthStore } from "../stores/authStore";
 import { useExpenseStore } from "../stores/expenseStore";
 import categoryService from "../services/categoryService";
 import walletService from "../services/walletService";
-import authService from "../services/authService";
+// authService is used through auth store's updateProfile
 
 export function Settings() {
-  const { user } = useAuthStore();
+  const { user, updateProfile } = useAuthStore();
   const { categories, wallets, fetchCategories, fetchWallets, addCategory, addWallet } = useExpenseStore();
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -17,6 +18,8 @@ export function Settings() {
   const [name, setName] = React.useState(user?.name || "");
   const [username, setUsername] = React.useState(user?.username || "");
   const [isSaving, setIsSaving] = React.useState(false);
+  const [message, setMessage] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
 
   // New category/wallet
   const [newCategoryName, setNewCategoryName] = React.useState("");
@@ -39,12 +42,17 @@ export function Settings() {
   }, [user]);
 
   const handleSaveProfile = async () => {
+    setMessage(null);
+    setError(null);
     setIsSaving(true);
     try {
-      await authService.updateProfile({ name, username });
+      await updateProfile({ name: name.trim(), username: username.trim() });
+      setMessage("Profile updated successfully.");
     }
-    catch (error) {
-      console.error("Failed to update profile:", error);
+    catch (err: any) {
+      const msg = err?.response?.data?.message || "Failed to update profile";
+      setError(Array.isArray(msg) ? msg.join(", ") : msg);
+      console.error("Failed to update profile:", err);
     }
     finally {
       setIsSaving(false);
@@ -80,7 +88,7 @@ export function Settings() {
     if (!newWalletName.trim())
       return;
     try {
-      const wallet = await walletService.create({ name: newWalletName.trim() });
+      const wallet = await walletService.create({ name: newWalletName.trim(), balance: 0, currency: "VND" });
       addWallet(wallet);
       setNewWalletName("");
     }
@@ -103,7 +111,7 @@ export function Settings() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-100">
         <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -112,13 +120,23 @@ export function Settings() {
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
       {/* Page Header */}
-      <div className="space-y-1">
+      <motion.div
+        className="space-y-1"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
         <p className="text-muted-foreground text-base">Manage your account and preferences</p>
-      </div>
+      </motion.div>
 
       {/* Profile */}
-      <Card>
+      <motion.div
+        initial={{ opacity: 0, x: -30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+      >
+        <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <User className="w-5 h-5" />
@@ -128,7 +146,7 @@ export function Settings() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-2xl font-bold">
+            <div className="w-16 h-16 rounded-full bg-linear-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-2xl font-bold">
               {name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "U"}
             </div>
             <div>
@@ -149,6 +167,9 @@ export function Settings() {
                 onChange={e => setName(e.target.value)}
                 className="w-full h-10 px-3 rounded-md border border-border bg-card text-sm"
               />
+              {name.trim().length === 0 && (
+                <p className="text-xs text-destructive">Name is required</p>
+              )}
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Username</label>
@@ -158,10 +179,26 @@ export function Settings() {
                 onChange={e => setUsername(e.target.value)}
                 className="w-full h-10 px-3 rounded-md border border-border bg-card text-sm"
               />
+              {username.trim().length < 3 && (
+                <p className="text-xs text-destructive">Username must be at least 3 characters</p>
+              )}
             </div>
           </div>
 
-          <Button onClick={handleSaveProfile} disabled={isSaving}>
+          {(message || error) && (
+            <div className={`text-sm ${error ? "text-destructive" : "text-success"}`}>
+              {error || message}
+            </div>
+          )}
+          <Button
+            onClick={handleSaveProfile}
+            disabled={
+              isSaving
+              || (name.trim() === (user?.name || "").trim() && username.trim() === (user?.username || "").trim())
+              || name.trim().length === 0
+              || username.trim().length < 3
+            }
+          >
             {isSaving
               ? (
                   <>
@@ -178,8 +215,14 @@ export function Settings() {
           </Button>
         </CardContent>
       </Card>
+      </motion.div>
 
       {/* Categories */}
+      <motion.div
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+      >
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -205,9 +248,12 @@ export function Settings() {
           </div>
 
           <div className="space-y-2">
-            {categories.map(cat => (
-              <div
+            {categories.map((cat, idx) => (
+              <motion.div
                 key={cat.id}
+                initial={{ opacity: 0, x: idx % 2 === 0 ? -20 : 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}
                 className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
               >
                 <div className="flex items-center gap-3">
@@ -222,7 +268,7 @@ export function Settings() {
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>
-              </div>
+              </motion.div>
             ))}
             {categories.length === 0 && (
               <p className="text-center py-4 text-muted-foreground">
@@ -232,8 +278,14 @@ export function Settings() {
           </div>
         </CardContent>
       </Card>
+      </motion.div>
 
       {/* Wallets */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.45, ease: "easeOut" }}
+      >
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -259,9 +311,12 @@ export function Settings() {
           </div>
 
           <div className="space-y-2">
-            {wallets.map(wallet => (
-              <div
+            {wallets.map((wallet, idx) => (
+              <motion.div
                 key={wallet.id}
+                initial={{ opacity: 0, x: idx % 2 === 0 ? -20 : 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}
                 className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
               >
                 <div className="flex items-center gap-3">
@@ -283,7 +338,7 @@ export function Settings() {
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>
-              </div>
+              </motion.div>
             ))}
             {wallets.length === 0 && (
               <p className="text-center py-4 text-muted-foreground">
@@ -293,6 +348,7 @@ export function Settings() {
           </div>
         </CardContent>
       </Card>
+      </motion.div>
     </div>
   );
 }
