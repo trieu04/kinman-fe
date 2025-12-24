@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Plus, UserPlus, Users } from "lucide-react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import {
@@ -91,7 +92,12 @@ export function Groups() {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <motion.div
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight">Groups</h1>
           <p className="text-muted-foreground text-base">Manage shared expenses with friends</p>
@@ -106,13 +112,24 @@ export function Groups() {
             Create Group
           </Button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Groups Grid */}
       {groups.length > 0
         ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {groups.map(group => (
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
+            >
+              {groups.map((group, idx) => (
+                <motion.div
+                  key={group.id}
+                  initial={{ opacity: 0, y: idx % 3 === 0 ? -30 : idx % 3 === 1 ? 30 : 0, x: idx % 3 === 2 ? -20 : 0 }}
+                  animate={{ opacity: 1, y: 0, x: 0 }}
+                  transition={{ duration: 0.7, delay: 0.25 + idx * 0.12, ease: "easeOut" }}
+                >
                 <Card
                   key={group.id}
                   className="cursor-pointer hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group"
@@ -150,10 +167,16 @@ export function Groups() {
                     </div>
                   </CardContent>
                 </Card>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )
         : (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
+            >
             <Card className="text-center py-12">
               <CardContent>
                 <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
@@ -171,6 +194,7 @@ export function Groups() {
                 </div>
               </CardContent>
             </Card>
+            </motion.div>
           )}
 
       {/* Create Group Modal */}

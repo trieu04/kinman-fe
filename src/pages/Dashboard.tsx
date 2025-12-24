@@ -1,5 +1,6 @@
 import * as React from "react";
 import { TrendingUp, TrendingDown, Wallet, PiggyBank } from "lucide-react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { useExpenseStore } from "../stores/expenseStore";
 import reportService from "../services/reportService";
@@ -72,13 +73,23 @@ export function Dashboard() {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div className="space-y-1">
+      <motion.div
+        className="space-y-1"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-muted-foreground text-base">Overview of your finances</p>
-      </div>
+      </motion.div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+        >
         <Card className="group cursor-pointer hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Balance</CardTitle>
@@ -97,7 +108,13 @@ export function Dashboard() {
             </p>
           </CardContent>
         </Card>
+        </motion.div>
 
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
+        >
         <Card className="group cursor-pointer hover:border-destructive/50 hover:shadow-lg hover:shadow-destructive/5 transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Monthly Spending</CardTitle>
@@ -114,7 +131,13 @@ export function Dashboard() {
             </p>
           </CardContent>
         </Card>
+        </motion.div>
 
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.35, ease: "easeOut" }}
+        >
         <Card className="group cursor-pointer hover:border-success/50 hover:shadow-lg hover:shadow-success/5 transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Transactions</CardTitle>
@@ -129,7 +152,13 @@ export function Dashboard() {
             </p>
           </CardContent>
         </Card>
+        </motion.div>
 
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.45, ease: "easeOut" }}
+        >
         <Card className="group cursor-pointer hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Savings Goal</CardTitle>
@@ -144,12 +173,19 @@ export function Dashboard() {
             </p>
           </CardContent>
         </Card>
+        </motion.div>
       </div>
 
       {/* Charts and Recent Transactions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Spending Chart */}
-        <Card className="lg:col-span-2">
+        <motion.div
+          className="lg:col-span-2"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.55, ease: "easeOut" }}
+        >
+        <Card>
           <CardHeader>
             <CardTitle>Monthly Spending Trend</CardTitle>
             <CardDescription>Your spending over the past months</CardDescription>
@@ -209,8 +245,14 @@ export function Dashboard() {
             </div>
           </CardContent>
         </Card>
+        </motion.div>
 
         {/* Recent Transactions */}
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.65, ease: "easeOut" }}
+        >
         <Card>
           <CardHeader>
             <CardTitle>Recent Transactions</CardTitle>
@@ -220,9 +262,14 @@ export function Dashboard() {
             <div className="space-y-4">
               {recentTransactions.length > 0
                 ? (
-                    recentTransactions.map(tx => (
-                      <div
+                    recentTransactions.map((tx, idx) => (
+                      <motion.div
                         key={tx.id}
+                        initial={{ opacity: 0, x: idx % 2 === 0 ? -20 : 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}
+                      >
+                      <div
                         className="flex items-center justify-between p-3.5 rounded-xl bg-muted/40 hover:bg-muted/70 cursor-pointer transition-all duration-200 group"
                       >
                         <div className="flex items-center gap-3.5">
@@ -243,6 +290,7 @@ export function Dashboard() {
                           {formatCurrency(Math.abs(tx.amount))}
                         </span>
                       </div>
+                      </motion.div>
                     ))
                   )
                 : (
@@ -254,6 +302,7 @@ export function Dashboard() {
             </div>
           </CardContent>
         </Card>
+        </motion.div>
       </div>
     </div>
   );

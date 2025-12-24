@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Copy, Check, Users, Receipt, CreditCard } from "lucide-react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
@@ -95,7 +96,12 @@ export function GroupDetail() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4">
+      <motion.div
+        className="flex items-center gap-4"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <Button variant="ghost" size="icon" onClick={() => navigate("/groups")}>
           <ArrowLeft className="w-5 h-5" />
         </Button>
@@ -124,10 +130,15 @@ export function GroupDetail() {
           <Plus className="w-4 h-4 mr-2" />
           Add Expense
         </Button>
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Members */}
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+        >
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Members</CardTitle>
@@ -146,8 +157,14 @@ export function GroupDetail() {
             ))}
           </CardContent>
         </Card>
+        </motion.div>
 
         {/* Debts */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
+        >
         <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
@@ -184,9 +201,16 @@ export function GroupDetail() {
                 )}
           </CardContent>
         </Card>
+        </motion.div>
 
         {/* Expenses */}
-        <Card className="lg:col-span-1">
+        <motion.div
+          className="lg:col-span-1"
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.35, ease: "easeOut" }}
+        >
+        <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <Receipt className="w-5 h-5" />
@@ -201,11 +225,17 @@ export function GroupDetail() {
           <CardContent className="space-y-3 max-h-[400px] overflow-y-auto">
             {expenses.length > 0
               ? (
-                  expenses.map(expense => (
-                    <div key={expense.id} className="p-3 rounded-lg bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors">
+                  expenses.map((expense, idx) => (
+                    <motion.div
+                      key={expense.id}
+                      initial={{ opacity: 0, y: idx % 2 === 0 ? -15 : 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}
+                    >
+                    <div className="p-3 rounded-lg bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors">
                       <div className="flex items-center justify-between">
                         <p className="font-medium">{expense.description}</p>
-                        <Badge variant={expense.splitType === "EQUAL" ? "secondary" : "outline"}>
+                        <Badge variant={expense.splitType === "equal" ? "secondary" : "outline"}>
                           {expense.splitType}
                         </Badge>
                       </div>
@@ -218,6 +248,7 @@ export function GroupDetail() {
                         <p className="font-semibold">{formatCurrency(expense.amount)}</p>
                       </div>
                     </div>
+                    </motion.div>
                   ))
                 )
               : (
@@ -227,6 +258,7 @@ export function GroupDetail() {
                 )}
           </CardContent>
         </Card>
+        </motion.div>
       </div>
 
       {/* Add Expense Modal */}
