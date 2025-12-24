@@ -34,3 +34,16 @@ export const signupSchema = z.object({
 });
 
 export type SignupFormData = z.infer<typeof signupSchema>;
+
+// ========== Transaction Schemas ==========
+export const editTransactionSchema = z.object({
+  amount: z
+    .number()
+    .positive("Số tiền phải lớn hơn 0"),
+  categoryId: z.string().min(1, "Vui lòng chọn danh mục"),
+  walletId: z.string().min(1, "Vui lòng chọn ví"),
+  date: z.string().min(1, "Vui lòng chọn ngày"),
+  note: z.string().optional(),
+});
+
+export type EditTransactionFormData = z.infer<typeof editTransactionSchema>;

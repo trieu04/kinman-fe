@@ -155,7 +155,7 @@ export function Dashboard() {
             <CardDescription>Your spending over the past months</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[320px]">
+            <div className="h-[320px] w-full">
               {chartData.length > 0
                 ? (
                     <ResponsiveContainer width="100%" height="100%">
@@ -188,7 +188,7 @@ export function Dashboard() {
                             borderRadius: "12px",
                             boxShadow: "0 10px 40px -10px rgba(0,0,0,0.2)",
                           }}
-                          formatter={(value: number) => [formatCurrency(value), "Amount"]}
+                          formatter={(value: number | string | undefined) => [formatCurrency(Number(value || 0)), "Amount"]}
                         />
                         <Area
                           type="monotone"

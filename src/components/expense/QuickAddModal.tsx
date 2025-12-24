@@ -73,7 +73,7 @@ export function QuickAddModal({ open, onOpenChange, onSuccess }: QuickAddModalPr
     if (!newCategoryName.trim()) return;
     setIsSubmitting(true);
     try {
-      const category = await categoryService.create({ name: newCategoryName.trim(), type: "expense" });
+      const category = await categoryService.create({ name: newCategoryName.trim() });
       addCategory(category);
       setSelectedCategoryId(category.id);
       setShowNewCategory(false);
@@ -91,7 +91,7 @@ export function QuickAddModal({ open, onOpenChange, onSuccess }: QuickAddModalPr
     if (!newWalletName.trim()) return;
     setIsSubmitting(true);
     try {
-      const wallet = await walletService.create({ name: newWalletName.trim(), type: "cash", balance: 0, currency: "VND" });
+      const wallet = await walletService.create({ name: newWalletName.trim(), balance: 0, currency: "VND" });
       addWallet(wallet);
       setSelectedWalletId(wallet.id);
       setShowNewWallet(false);
@@ -151,10 +151,10 @@ export function QuickAddModal({ open, onOpenChange, onSuccess }: QuickAddModalPr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[520px]">
+      <DialogContent className="sm:max-w-130">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center shadow-lg shadow-primary/25">
+            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary to-purple-500 flex items-center justify-center shadow-lg shadow-primary/25">
               <span className="text-white text-lg font-bold">+</span>
             </div>
             <span className="text-xl">Quick Add Expense</span>
@@ -328,7 +328,7 @@ export function QuickAddModal({ open, onOpenChange, onSuccess }: QuickAddModalPr
 
           {/* Summary */}
           {finalAmount > 0 && (
-            <div className="p-5 rounded-xl bg-gradient-to-r from-primary/10 to-purple-500/10 border border-primary/20">
+            <div className="p-5 rounded-xl bg-linear-to-r from-primary/10 to-purple-500/10 border border-primary/20">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-muted-foreground">Total Amount</span>
                 <span className="text-2xl font-bold text-destructive stat-number">
@@ -347,7 +347,7 @@ export function QuickAddModal({ open, onOpenChange, onSuccess }: QuickAddModalPr
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting || finalAmount <= 0 || !selectedCategoryId || !selectedWalletId}
-            className="px-6 bg-gradient-to-r from-primary to-purple-500 shadow-lg shadow-primary/25"
+            className="px-6 bg-linear-to-r from-primary to-purple-500 shadow-lg shadow-primary/25"
           >
             {isSubmitting
               ? (
