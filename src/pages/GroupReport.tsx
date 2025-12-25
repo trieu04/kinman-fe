@@ -63,9 +63,9 @@ export function GroupReport() {
     };
 
     const getBalanceColor = (balance: number) => {
-        if (balance > 0) return 'text-green-600';
-        if (balance < 0) return 'text-red-600';
-        return 'text-gray-600';
+        if (balance > 0) return 'text-green-600 dark:text-green-400';
+        if (balance < 0) return 'text-red-600 dark:text-red-400';
+        return 'text-gray-600 dark:text-neutral-300';
     };
 
     if (!groupId) {
@@ -85,35 +85,35 @@ export function GroupReport() {
     return (
         <div className="container mx-auto p-6 max-w-7xl">
             <div className="mb-8">
-                <h1 className="text-3xl font-bold mb-2">Group Report</h1>
-                <p className="text-gray-600">View group expenses and debts</p>
+                <h1 className="text-3xl font-bold mb-2 text-neutral-900 dark:text-neutral-100">Group Report</h1>
+                <p className="text-gray-700 dark:text-neutral-300">View group expenses and debts</p>
             </div>
 
             {/* Filter Section */}
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-md p-6 mb-6 border border-gray-200 dark:border-neutral-800">
                 <div className="flex items-center gap-2 mb-4">
                     <Calendar className="h-5 w-5 text-blue-600" />
-                    <h2 className="text-xl font-semibold">Select Time Range</h2>
+                    <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">Select Time Range</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
-                        <label className="block text-sm font-medium mb-2">From Date</label>
+                        <label className="block text-sm font-medium mb-2 text-neutral-800 dark:text-neutral-200">From Date</label>
                         <input
                             type="date"
                             value={fromDate}
                             onChange={(e) => setFromDate(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            style={{ colorScheme: 'light' }}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-neutral-800 dark:text-neutral-100"
+                            style={{ colorScheme: 'auto' }}
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-2">To Date</label>
+                        <label className="block text-sm font-medium mb-2 text-neutral-800 dark:text-neutral-200">To Date</label>
                         <input
                             type="date"
                             value={toDate}
                             onChange={(e) => setToDate(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            style={{ colorScheme: 'light' }}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-neutral-800 dark:text-neutral-100"
+                            style={{ colorScheme: 'auto' }}
                         />
                     </div>
                     <div className="flex items-end">
@@ -166,26 +166,26 @@ export function GroupReport() {
                     </div>
 
                     {/* Member Expenses */}
-                    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-                        <h2 className="text-xl font-semibold mb-4">Member Expenses</h2>
+                    <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-md p-6 mb-6 border border-gray-200 dark:border-neutral-800">
+                        <h2 className="text-xl font-semibold mb-4 text-neutral-900 dark:text-neutral-100">Member Expenses</h2>
                         <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead>
-                                    <tr className="border-b">
-                                        <th className="text-left py-3 px-4">Member</th>
-                                        <th className="text-right py-3 px-4">Paid</th>
-                                        <th className="text-right py-3 px-4">Owed</th>
-                                        <th className="text-right py-3 px-4">Balance</th>
+                                    <tr className="border-b border-gray-200 dark:border-neutral-800">
+                                        <th className="text-left py-3 px-4 text-neutral-700 dark:text-neutral-300">Member</th>
+                                        <th className="text-right py-3 px-4 text-neutral-700 dark:text-neutral-300">Paid</th>
+                                        <th className="text-right py-3 px-4 text-neutral-700 dark:text-neutral-300">Owed</th>
+                                        <th className="text-right py-3 px-4 text-neutral-700 dark:text-neutral-300">Balance</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {summary.memberExpenses.map((member: GroupReportSummary['memberExpenses'][0]) => (
-                                        <tr key={member.userId} className="border-b hover:bg-gray-50">
-                                            <td className="py-3 px-4 font-medium">{member.userName}</td>
-                                            <td className="text-right py-3 px-4 text-green-600">
+                                        <tr key={member.userId} className="border-b border-gray-200 dark:border-neutral-800 hover:bg-gray-50 dark:hover:bg-neutral-800">
+                                            <td className="py-3 px-4 font-medium text-neutral-900 dark:text-neutral-100">{member.userName}</td>
+                                            <td className="text-right py-3 px-4 text-green-600 dark:text-green-400">
                                                 {formatCurrency(member.totalPaid)}
                                             </td>
-                                            <td className="text-right py-3 px-4 text-red-600">
+                                            <td className="text-right py-3 px-4 text-red-600 dark:text-red-400">
                                                 {formatCurrency(member.totalOwed)}
                                             </td>
                                             <td className={`text-right py-3 px-4 font-bold ${getBalanceColor(member.balance)}`}>
@@ -200,26 +200,26 @@ export function GroupReport() {
 
                     {/* Pending Debts */}
                     {summary.debts.pending.length > 0 && (
-                        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-                            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-md p-6 mb-6 border border-gray-200 dark:border-neutral-800">
+                            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-neutral-900 dark:text-neutral-100">
                                 <AlertCircle className="h-5 w-5 text-yellow-600" />
                                 Pending Debts
                             </h2>
                             <div className="overflow-x-auto">
                                 <table className="w-full">
                                     <thead>
-                                        <tr className="border-b">
-                                            <th className="text-left py-3 px-4">Debtor</th>
-                                            <th className="text-left py-3 px-4">Creditor</th>
-                                            <th className="text-right py-3 px-4">Amount</th>
+                                        <tr className="border-b border-gray-200 dark:border-neutral-800">
+                                            <th className="text-left py-3 px-4 text-neutral-700 dark:text-neutral-300">Debtor</th>
+                                            <th className="text-left py-3 px-4 text-neutral-700 dark:text-neutral-300">Creditor</th>
+                                            <th className="text-right py-3 px-4 text-neutral-700 dark:text-neutral-300">Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {summary.debts.pending.map((debt: GroupReportSummary['debts']['pending'][0]) => (
-                                            <tr key={debt.id} className="border-b hover:bg-gray-50">
-                                                <td className="py-3 px-4">{debt.fromUserName}</td>
-                                                <td className="py-3 px-4">{debt.toUserName}</td>
-                                                <td className="text-right py-3 px-4 font-semibold text-red-600">
+                                            <tr key={debt.id} className="border-b border-gray-200 dark:border-neutral-800 hover:bg-gray-50 dark:hover:bg-neutral-800">
+                                                <td className="py-3 px-4 text-neutral-900 dark:text-neutral-100">{debt.fromUserName}</td>
+                                                <td className="py-3 px-4 text-neutral-900 dark:text-neutral-100">{debt.toUserName}</td>
+                                                <td className="text-right py-3 px-4 font-semibold text-red-600 dark:text-red-400">
                                                     {formatCurrency(debt.amount)}
                                                 </td>
                                             </tr>
@@ -232,30 +232,30 @@ export function GroupReport() {
 
                     {/* Settled Debts */}
                     {summary.debts.settled.length > 0 && (
-                        <div className="bg-white rounded-lg shadow-md p-6">
-                            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-md p-6 border border-gray-200 dark:border-neutral-800">
+                            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-neutral-900 dark:text-neutral-100">
                                 <TrendingUp className="h-5 w-5 text-green-600" />
                                 Settled Debts
                             </h2>
                             <div className="overflow-x-auto">
                                 <table className="w-full">
                                     <thead>
-                                        <tr className="border-b">
-                                            <th className="text-left py-3 px-4">Debtor</th>
-                                            <th className="text-left py-3 px-4">Creditor</th>
-                                            <th className="text-right py-3 px-4">Amount</th>
-                                            <th className="text-right py-3 px-4">Settled Date</th>
+                                        <tr className="border-b border-gray-200 dark:border-neutral-800">
+                                            <th className="text-left py-3 px-4 text-neutral-700 dark:text-neutral-300">Debtor</th>
+                                            <th className="text-left py-3 px-4 text-neutral-700 dark:text-neutral-300">Creditor</th>
+                                            <th className="text-right py-3 px-4 text-neutral-700 dark:text-neutral-300">Amount</th>
+                                            <th className="text-right py-3 px-4 text-neutral-700 dark:text-neutral-300">Settled Date</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {summary.debts.settled.map((debt: GroupReportSummary['debts']['settled'][0]) => (
-                                            <tr key={debt.id} className="border-b hover:bg-gray-50">
-                                                <td className="py-3 px-4">{debt.fromUserName}</td>
-                                                <td className="py-3 px-4">{debt.toUserName}</td>
-                                                <td className="text-right py-3 px-4 font-semibold text-green-600">
+                                            <tr key={debt.id} className="border-b border-gray-200 dark:border-neutral-800 hover:bg-gray-50 dark:hover:bg-neutral-800">
+                                                <td className="py-3 px-4 text-neutral-900 dark:text-neutral-100">{debt.fromUserName}</td>
+                                                <td className="py-3 px-4 text-neutral-900 dark:text-neutral-100">{debt.toUserName}</td>
+                                                <td className="text-right py-3 px-4 font-semibold text-green-600 dark:text-green-400">
                                                     {formatCurrency(debt.amount)}
                                                 </td>
-                                                <td className="text-right py-3 px-4 text-gray-600">
+                                                <td className="text-right py-3 px-4 text-gray-700 dark:text-neutral-300">
                                                     {debt.settledAt ? new Date(debt.settledAt).toLocaleDateString('vi-VN') : '-'}
                                                 </td>
                                             </tr>
@@ -270,10 +270,10 @@ export function GroupReport() {
 
             {/* Empty State */}
             {!summary && !loading && (
-                <div className="bg-white rounded-lg shadow-md p-12 text-center">
-                    <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-gray-700 mb-2">No Report Yet</h3>
-                    <p className="text-gray-500">Click "Generate Report" to view group data</p>
+                <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-md p-12 text-center border border-gray-200 dark:border-neutral-800">
+                    <Users className="h-16 w-16 text-gray-400 dark:text-neutral-500 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-2">No Report Yet</h3>
+                    <p className="text-gray-600 dark:text-neutral-300">Click "Generate Report" to view group data</p>
                 </div>
             )}
         </div>
