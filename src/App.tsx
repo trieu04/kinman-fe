@@ -10,6 +10,8 @@ import { Transactions } from "./pages/Transactions";
 import { Groups } from "./pages/Groups";
 import { GroupDetail } from "./pages/GroupDetail";
 import { Settings } from "./pages/Settings";
+import { UserReport } from "./pages/UserReport";
+import { GroupReport } from "./pages/GroupReport";
 import { useAuthStore } from "./stores/authStore";
 import { useThemeStore } from "./stores/themeStore";
 import "./index.css";
@@ -53,6 +55,8 @@ function App() {
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/groups" element={<Groups />} />
             <Route path="/groups/:id" element={<GroupDetail />} />
+            <Route path="/reports/user" element={<UserReport />} />
+            <Route path="/reports/group/:groupId" element={<GroupReport />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
 
