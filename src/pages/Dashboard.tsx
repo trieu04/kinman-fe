@@ -222,15 +222,15 @@ export function Dashboard() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
         >
-          <Card className="group cursor-pointer hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
+          <Card className="group cursor-pointer border border-slate-500/20 bg-gradient-to-br from-slate-50 via-amber-50/40 to-slate-50 dark:from-slate-900 dark:via-slate-800/60 dark:to-slate-900 shadow-lg shadow-slate-500/10 hover:shadow-xl hover:shadow-amber-500/15 hover:border-amber-500/40 transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Total Balance</CardTitle>
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Wallet className="h-4 w-4 text-primary" />
+              <CardTitle className="text-sm font-medium text-foreground/80">Total Balance</CardTitle>
+              <div className="p-2 rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-600/10">
+                <Wallet className="h-4 w-4 text-amber-600 dark:text-amber-400" />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold stat-number">{formatCurrency(displayValue)}</div>
+              <div className="text-2xl font-bold stat-number bg-gradient-to-r from-slate-900 to-amber-800 dark:from-slate-50 dark:to-amber-300 bg-clip-text text-transparent">{formatCurrency(displayValue)}</div>
               <p className="text-xs text-muted-foreground mt-1">
                 {chartMode === "monthly" ? displayLabel : `Range · ${displayLabel}`}
               </p>
@@ -243,11 +243,11 @@ export function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
         >
-          <Card className="group cursor-pointer hover:border-destructive/50 hover:shadow-lg hover:shadow-destructive/5 transition-all duration-300">
+          <Card className="group cursor-pointer border border-rose-500/20 bg-gradient-to-br from-rose-50 via-pink-50/30 to-rose-50 dark:from-slate-900 dark:via-rose-950/30 dark:to-slate-900 shadow-lg shadow-rose-500/10 hover:shadow-xl hover:shadow-rose-500/20 hover:border-rose-500/40 transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Spending</CardTitle>
-              <div className="p-2 rounded-lg bg-destructive/10">
-                <TrendingDown className="h-4 w-4 text-destructive" />
+              <CardTitle className="text-sm font-medium text-foreground/80">Spending</CardTitle>
+              <div className="p-2 rounded-lg bg-gradient-to-br from-rose-500/20 to-rose-600/10">
+                <TrendingDown className="h-4 w-4 text-rose-600 dark:text-rose-400" />
               </div>
             </CardHeader>
             <CardContent>
@@ -266,15 +266,15 @@ export function Dashboard() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.35, ease: "easeOut" }}
         >
-          <Card className="group cursor-pointer hover:border-success/50 hover:shadow-lg hover:shadow-success/5 transition-all duration-300">
+          <Card className="group cursor-pointer border border-emerald-500/20 bg-gradient-to-br from-emerald-50 via-teal-50/30 to-emerald-50 dark:from-slate-900 dark:via-emerald-950/30 dark:to-slate-900 shadow-lg shadow-emerald-500/10 hover:shadow-xl hover:shadow-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Transactions</CardTitle>
-              <div className="p-2 rounded-lg bg-success/10">
-                <TrendingUp className="h-4 w-4 text-success" />
+              <CardTitle className="text-sm font-medium text-foreground/80">Transactions</CardTitle>
+              <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-500/20 to-emerald-600/10">
+                <TrendingUp className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold stat-number">{transactionCount}</div>
+              <div className="text-2xl font-bold stat-number bg-gradient-to-r from-emerald-700 to-teal-600 dark:from-emerald-400 dark:to-teal-300 bg-clip-text text-transparent">{transactionCount}</div>
               <p className="text-xs text-muted-foreground mt-1">
                 {chartMode === "monthly" ? displayLabel : `Range · ${displayLabel}`}
               </p>
@@ -432,7 +432,7 @@ export function Dashboard() {
                             borderRadius: "12px",
                             boxShadow: "0 10px 40px -10px rgba(0,0,0,0.2)",
                           }}
-                          formatter={(value: number | string | undefined) => [formatCurrency(Number(value ?? 0)), "Amount"]}
+                        formatter={(value) => [formatCurrency(Number(value ?? 0)), "Amount"]}
                         />
                         <Area
                           type="monotone"
@@ -483,7 +483,7 @@ export function Dashboard() {
                             borderRadius: "12px",
                             boxShadow: "0 10px 40px -10px rgba(0,0,0,0.2)",
                           }}
-                          formatter={(value: number | string | undefined) => [formatCurrency(Number(value ?? 0)), "Amount"]}
+                        formatter={(value) => [formatCurrency(Number(value ?? 0)), "Amount"]}
                         />
                         <Bar dataKey="amount" fill="#6366F1" radius={[6, 6, 0, 0]} />
                       </BarChart>

@@ -117,6 +117,20 @@ export function Settings() {
     );
   }
 
+  const categoryAccents = [
+    "from-amber-500/20 via-amber-500/10 to-amber-500/5 border-amber-500/30",
+    "from-emerald-500/20 via-emerald-500/10 to-emerald-500/5 border-emerald-500/30",
+    "from-blue-500/20 via-blue-500/10 to-blue-500/5 border-blue-500/25",
+    "from-rose-500/20 via-rose-500/10 to-rose-500/5 border-rose-500/25",
+  ];
+
+  const walletAccents = [
+    "from-indigo-500/20 via-indigo-500/10 to-indigo-500/5 border-indigo-500/30",
+    "from-teal-500/20 via-teal-500/10 to-teal-500/5 border-teal-500/30",
+    "from-orange-500/20 via-orange-500/10 to-orange-500/5 border-orange-500/30",
+    "from-cyan-500/20 via-cyan-500/10 to-cyan-500/5 border-cyan-500/30",
+  ];
+
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
       {/* Page Header */}
@@ -136,17 +150,17 @@ export function Settings() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
       >
-        <Card>
+        <Card className="border border-primary/10 shadow-lg shadow-primary/10 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-800">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="w-5 h-5" />
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <User className="w-5 h-5 text-primary" />
             Profile
           </CardTitle>
-          <CardDescription>Update your personal information</CardDescription>
+          <CardDescription className="text-muted-foreground">Update your personal information</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-linear-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-2xl font-bold">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-2xl font-bold">
               {name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "U"}
             </div>
             <div>
@@ -165,7 +179,7 @@ export function Settings() {
                 type="text"
                 value={name}
                 onChange={e => setName(e.target.value)}
-                className="w-full h-10 px-3 rounded-md border border-border bg-card text-sm"
+                className="w-full h-10 px-3 rounded-md border border-border/60 bg-card/80 text-sm focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary/50 transition"
               />
               {name.trim().length === 0 && (
                 <p className="text-xs text-destructive">Name is required</p>
@@ -177,7 +191,7 @@ export function Settings() {
                 type="text"
                 value={username}
                 onChange={e => setUsername(e.target.value)}
-                className="w-full h-10 px-3 rounded-md border border-border bg-card text-sm"
+                className="w-full h-10 px-3 rounded-md border border-border/60 bg-card/80 text-sm focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary/50 transition"
               />
               {username.trim().length < 3 && (
                 <p className="text-xs text-destructive">Username must be at least 3 characters</p>
@@ -186,7 +200,7 @@ export function Settings() {
           </div>
 
           {(message || error) && (
-            <div className={`text-sm ${error ? "text-destructive" : "text-success"}`}>
+            <div className={`text-sm px-3 py-2 rounded-md ${error ? "bg-destructive/10 text-destructive" : "bg-success/10 text-success"}`}>
               {error || message}
             </div>
           )}
@@ -223,13 +237,13 @@ export function Settings() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
       >
-      <Card>
+      <Card className="border border-amber-500/20 shadow-lg shadow-amber-500/10 bg-gradient-to-br from-white to-amber-50/60 dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-800">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Tag className="w-5 h-5" />
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Tag className="w-5 h-5 text-amber-500" />
             Categories
           </CardTitle>
-          <CardDescription>Manage your expense categories</CardDescription>
+          <CardDescription className="text-muted-foreground">Manage your expense categories</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex gap-2">
@@ -238,38 +252,41 @@ export function Settings() {
               value={newCategoryName}
               onChange={e => setNewCategoryName(e.target.value)}
               placeholder="New category name"
-              className="flex-1 h-10 px-3 rounded-md border border-border bg-card text-sm"
+              className="flex-1 h-10 px-3 rounded-md border border-amber-500/30 bg-white/80 dark:bg-slate-900/70 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/60 focus:border-amber-500/50 transition"
               onKeyDown={e => e.key === "Enter" && handleAddCategory()}
             />
-            <Button onClick={handleAddCategory} disabled={!newCategoryName.trim()}>
+            <Button onClick={handleAddCategory} disabled={!newCategoryName.trim()} className="bg-amber-500 hover:bg-amber-600 text-white">
               <Plus className="w-4 h-4 mr-2" />
               Add
             </Button>
           </div>
 
           <div className="space-y-2">
-            {categories.map((cat, idx) => (
-              <motion.div
-                key={cat.id}
-                initial={{ opacity: 0, x: idx % 2 === 0 ? -20 : 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}
-                className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-lg">{cat.icon || "📁"}</span>
-                  <span className="font-medium">{cat.name}</span>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-destructive"
-                  onClick={() => handleDeleteCategory(cat.id)}
+            {categories.map((cat, idx) => {
+              const accent = categoryAccents[idx % categoryAccents.length];
+              return (
+                <motion.div
+                  key={cat.id}
+                  initial={{ opacity: 0, x: idx % 2 === 0 ? -20 : 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}
+                  className={`flex items-center justify-between p-3 rounded-lg border bg-gradient-to-r ${accent} shadow-sm`}
                 >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </motion.div>
-            ))}
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">{cat.icon || "📁"}</span>
+                    <span className="font-medium">{cat.name}</span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                    onClick={() => handleDeleteCategory(cat.id)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </motion.div>
+              );
+            })}
             {categories.length === 0 && (
               <p className="text-center py-4 text-muted-foreground">
                 No categories yet. Create one to get started!
@@ -286,13 +303,13 @@ export function Settings() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.45, ease: "easeOut" }}
       >
-      <Card>
+      <Card className="border border-indigo-500/20 shadow-lg shadow-indigo-500/10 bg-gradient-to-br from-white to-indigo-50/60 dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-800">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Wallet className="w-5 h-5" />
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Wallet className="w-5 h-5 text-indigo-500" />
             Wallets
           </CardTitle>
-          <CardDescription>Manage your wallets and accounts</CardDescription>
+          <CardDescription className="text-muted-foreground">Manage your wallets and accounts</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex gap-2">
@@ -301,45 +318,48 @@ export function Settings() {
               value={newWalletName}
               onChange={e => setNewWalletName(e.target.value)}
               placeholder="New wallet name"
-              className="flex-1 h-10 px-3 rounded-md border border-border bg-card text-sm"
+              className="flex-1 h-10 px-3 rounded-md border border-indigo-500/30 bg-white/80 dark:bg-slate-900/70 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/60 focus:border-indigo-500/50 transition"
               onKeyDown={e => e.key === "Enter" && handleAddWallet()}
             />
-            <Button onClick={handleAddWallet} disabled={!newWalletName.trim()}>
+            <Button onClick={handleAddWallet} disabled={!newWalletName.trim()} className="bg-indigo-500 hover:bg-indigo-600 text-white">
               <Plus className="w-4 h-4 mr-2" />
               Add
             </Button>
           </div>
 
           <div className="space-y-2">
-            {wallets.map((wallet, idx) => (
-              <motion.div
-                key={wallet.id}
-                initial={{ opacity: 0, x: idx % 2 === 0 ? -20 : 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}
-                className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-lg">{wallet.icon || "💳"}</span>
-                  <div>
-                    <span className="font-medium">{wallet.name}</span>
-                    <p className="text-xs text-muted-foreground">
-                      Balance:
-                      {" "}
-                      {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 }).format(wallet.balance)}
-                    </p>
+            {wallets.map((wallet, idx) => {
+              const accent = walletAccents[idx % walletAccents.length];
+              return (
+                <motion.div
+                  key={wallet.id}
+                  initial={{ opacity: 0, x: idx % 2 === 0 ? -20 : 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}
+                  className={`flex items-center justify-between p-3 rounded-lg border bg-gradient-to-r ${accent} shadow-sm`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">{wallet.icon || "💳"}</span>
+                    <div>
+                      <span className="font-medium">{wallet.name}</span>
+                      <p className="text-xs text-muted-foreground">
+                        Balance:
+                        {" "}
+                        {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 }).format(wallet.balance)}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <Button
+                  <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-destructive"
+                  className="h-8 w-8 text-destructive hover:bg-destructive/10"
                   onClick={() => handleDeleteWallet(wallet.id)}
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </motion.div>
-            ))}
+              );
+            })}
             {wallets.length === 0 && (
               <p className="text-center py-4 text-muted-foreground">
                 No wallets yet. Create one to track your money!

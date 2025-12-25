@@ -8,7 +8,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   asChild?: boolean;
 }
 
-function Button({ ref, className, variant = "default", size = "default", asChild = false, ...props }: ButtonProps & { ref?: React.RefObject<HTMLButtonElement | null> }) {
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant = "default", size = "default", asChild = false, ...props }, ref) => {
   const Comp = asChild ? Slot : "button";
 
   const baseStyles = `
@@ -46,7 +46,7 @@ function Button({ ref, className, variant = "default", size = "default", asChild
       {...props}
     />
   );
-}
+});
 Button.displayName = "Button";
 
 export { Button };
