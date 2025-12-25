@@ -20,7 +20,7 @@ import {
 import { endOfMonth, format, startOfMonth } from "date-fns";
 
 export function Dashboard() {
-  const { wallets, fetchWallets } = useExpenseStore();
+  const { fetchWallets } = useExpenseStore();
   const [monthlyTrend, setMonthlyTrend] = React.useState<MonthlyTrend[]>([]);
   const [dailyTrend, setDailyTrend] = React.useState<DailyTrend[]>([]);
   const [recentTransactions, setRecentTransactions] = React.useState<Transaction[]>([]);
@@ -31,7 +31,6 @@ export function Dashboard() {
 
   const [chartMode, setChartMode] = React.useState<"monthly" | "daily">("monthly");
   const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1;
   const [selectedYear, setSelectedYear] = React.useState<number>(currentYear);
   const [selectedMonth, setSelectedMonth] = React.useState<number | "all">("all");
   const [dailyRange, setDailyRange] = React.useState({
@@ -135,8 +134,6 @@ export function Dashboard() {
     setHoverValue(null);
   }, [chartMode, selectedYear, selectedMonth, dailyRange]);
 
-  const totalBalance = wallets.reduce((sum, wallet) => sum + wallet.balance, 0);
-
   const monthlyChartData = React.useMemo(() => {
     // Ensure 12 months are always present for the selected year
     const base = Array.from({ length: 12 }, (_, idx) => ({
@@ -168,7 +165,6 @@ export function Dashboard() {
 
   const monthlyChartTotal = monthlyChartData.reduce((sum, item) => sum + item.amount, 0);
   const dailyChartTotal = dailyChartData.reduce((sum, item) => sum + item.amount, 0);
-  const dailyChartCount = dailyTrend.reduce((sum, item) => sum + item.count, 0);
   const monthSelectedTotal = selectedMonth === "all"
     ? monthlyChartTotal
     : (monthlyTrend.find(m => m.month === selectedMonth)?.total || 0);
