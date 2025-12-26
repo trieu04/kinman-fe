@@ -26,6 +26,58 @@ function App() {
     fetchUser();
   }, [fetchUser]);
 
+  // Listen for external open-quick-add events
+  React.useEffect(() => {
+    const handleOpenQuickAdd = () => setQuickAddOpen(true);
+    window.addEventListener("open-quick-add", handleOpenQuickAdd);
+    return () => window.removeEventListener("open-quick-add", handleOpenQuickAdd);
+  }, []);
+
+  // Check for daily reminder
+  React.useEffect(() => {
+    const checkReminder = () => {
+      try {
+        const enabled = localStorage.getItem("reminderEnabled") === "true";
+        const time = localStorage.getItem("reminderTime");
+        const lastSent = localStorage.getItem("lastNotificationDate");
+        const today = new Date().toDateString();
+
+        if (enabled && time && lastSent !== today) {
+          const [hours, minutes] = time.split(":").map(Number);
+          const now = new Date();
+
+          // Check if it's time (or passed time within last hour to be safe, but usually just >= is enough if we track date)
+          // Actually, we want to trigger it IF current time >= target time AND we haven't sent it today.
+          if (now.getHours() > hours || (now.getHours() === hours && now.getMinutes() >= minutes)) {
+            // Send notification
+            if (Notification.permission === "granted") {
+              const notification = new Notification("Time to record your expenses!", {
+                body: "Click here to add a new note/transaction.",
+                icon: "/favicon.ico", // Assuming standard favicon or icon
+              });
+
+              notification.onclick = () => {
+                window.focus();
+                setQuickAddOpen(true);
+              };
+
+              localStorage.setItem("lastNotificationDate", today);
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Error checking reminder:", e);
+      }
+    };
+
+    // Check every minute
+    const interval = setInterval(checkReminder, 60000);
+    // Initial check
+    checkReminder();
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <BrowserRouter>
       <div className={resolvedTheme === "dark" ? "dark" : ""}>
