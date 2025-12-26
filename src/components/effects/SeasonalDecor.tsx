@@ -38,9 +38,9 @@ export function SeasonalDecor({
     endMonth = 1,
     endDay = 5,
 }: SeasonalDecorProps) {
-    const isActive = typeof enabled === "boolean" ? enabled : isFestiveWindow(startMonth, endMonth, endDay);
+    const { resolvedTheme, christmasEffectsEnabled } = useThemeStore();
+    const isActive = typeof enabled === "boolean" ? enabled : (christmasEffectsEnabled && isFestiveWindow(startMonth, endMonth, endDay));
     if (!isActive) return null;
-    const { resolvedTheme } = useThemeStore();
     const snowColor = resolvedTheme === "light"
         ? "rgba(80, 110, 140, 0.9)"      // Dark blue-grey for light mode
         : "rgba(255, 255, 255, 0.92)";   // White for dark mode
