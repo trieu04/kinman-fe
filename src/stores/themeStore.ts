@@ -7,6 +7,8 @@ interface ThemeState {
   theme: Theme;
   setTheme: (theme: Theme) => void;
   resolvedTheme: "light" | "dark";
+  christmasEffectsEnabled: boolean;
+  setChristmasEffectsEnabled: (enabled: boolean) => void;
 }
 
 function getSystemTheme(): "light" | "dark" {
@@ -30,9 +32,13 @@ export const useThemeStore = create<ThemeState>()(
     set => ({
       theme: "light",
       resolvedTheme: "light",
+      christmasEffectsEnabled: true,
       setTheme: (theme: Theme) => {
         const resolved = applyTheme(theme);
         set({ theme, resolvedTheme: resolved });
+      },
+      setChristmasEffectsEnabled: (enabled: boolean) => {
+        set({ christmasEffectsEnabled: enabled });
       },
     }),
     {

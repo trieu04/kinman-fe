@@ -117,78 +117,78 @@ export function Groups() {
       {/* Groups Grid */}
       {groups.length > 0
         ? (
-            <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
-            >
-              {(() => {
-                const palette = [
-                  { bg: "from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30", border: "border-purple-500/20 dark:border-purple-500/30", shadow: "shadow-purple-500/10", icon: "from-purple-500 to-pink-500", iconShadow: "shadow-purple-500/20", accent: "from-purple-400 to-pink-400" },
-                  { bg: "from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30", border: "border-blue-500/20 dark:border-blue-500/30", shadow: "shadow-blue-500/10", icon: "from-blue-500 to-cyan-500", iconShadow: "shadow-blue-500/20", accent: "from-blue-400 to-cyan-400" },
-                  { bg: "from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30", border: "border-emerald-500/20 dark:border-emerald-500/30", shadow: "shadow-emerald-500/10", icon: "from-emerald-500 to-teal-500", iconShadow: "shadow-emerald-500/20", accent: "from-emerald-400 to-teal-400" },
-                  { bg: "from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30", border: "border-amber-500/20 dark:border-amber-500/30", shadow: "shadow-amber-500/10", icon: "from-amber-500 to-orange-500", iconShadow: "shadow-amber-500/20", accent: "from-amber-400 to-orange-400" },
-                  { bg: "from-rose-50 to-red-50 dark:from-rose-950/30 dark:to-red-950/30", border: "border-rose-500/20 dark:border-rose-500/30", shadow: "shadow-rose-500/10", icon: "from-rose-500 to-red-500", iconShadow: "shadow-rose-500/20", accent: "from-rose-400 to-red-400" },
-                  { bg: "from-indigo-50 to-violet-50 dark:from-indigo-950/30 dark:to-violet-950/30", border: "border-indigo-500/20 dark:border-indigo-500/30", shadow: "shadow-indigo-500/10", icon: "from-indigo-500 to-violet-500", iconShadow: "shadow-indigo-500/20", accent: "from-indigo-400 to-violet-400" },
-                ];
-                return groups.map((group, idx) => {
-                  const colors = palette[idx % palette.length];
-                  return (
-                    <motion.div
-                      key={group.id}
-                      initial={{ opacity: 0, y: idx % 3 === 0 ? -30 : idx % 3 === 1 ? 30 : 0, x: idx % 3 === 2 ? -20 : 0 }}
-                      animate={{ opacity: 1, y: 0, x: 0 }}
-                      transition={{ duration: 0.7, delay: 0.25 + idx * 0.12, ease: "easeOut" }}
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
+          >
+            {(() => {
+              const palette = [
+                { bg: "from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30", border: "border-purple-500/20 dark:border-purple-500/30", shadow: "shadow-purple-500/10", icon: "from-purple-500 to-pink-500", iconShadow: "shadow-purple-500/20", accent: "from-purple-400 to-pink-400" },
+                { bg: "from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30", border: "border-blue-500/20 dark:border-blue-500/30", shadow: "shadow-blue-500/10", icon: "from-blue-500 to-cyan-500", iconShadow: "shadow-blue-500/20", accent: "from-blue-400 to-cyan-400" },
+                { bg: "from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30", border: "border-emerald-500/20 dark:border-emerald-500/30", shadow: "shadow-emerald-500/10", icon: "from-emerald-500 to-teal-500", iconShadow: "shadow-emerald-500/20", accent: "from-emerald-400 to-teal-400" },
+                { bg: "from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30", border: "border-amber-500/20 dark:border-amber-500/30", shadow: "shadow-amber-500/10", icon: "from-amber-500 to-orange-500", iconShadow: "shadow-amber-500/20", accent: "from-amber-400 to-orange-400" },
+                { bg: "from-rose-50 to-red-50 dark:from-rose-950/30 dark:to-red-950/30", border: "border-rose-500/20 dark:border-rose-500/30", shadow: "shadow-rose-500/10", icon: "from-rose-500 to-red-500", iconShadow: "shadow-rose-500/20", accent: "from-rose-400 to-red-400" },
+                { bg: "from-indigo-50 to-violet-50 dark:from-indigo-950/30 dark:to-violet-950/30", border: "border-indigo-500/20 dark:border-indigo-500/30", shadow: "shadow-indigo-500/10", icon: "from-indigo-500 to-violet-500", iconShadow: "shadow-indigo-500/20", accent: "from-indigo-400 to-violet-400" },
+              ];
+              return groups.map((group, idx) => {
+                const colors = palette[idx % palette.length];
+                return (
+                  <motion.div
+                    key={group.id}
+                    initial={{ opacity: 0, y: idx % 3 === 0 ? -30 : idx % 3 === 1 ? 30 : 0, x: idx % 3 === 2 ? -20 : 0 }}
+                    animate={{ opacity: 1, y: 0, x: 0 }}
+                    transition={{ duration: 0.7, delay: 0.25 + idx * 0.12, ease: "easeOut" }}
+                  >
+                    <Card
+                      className={`cursor-pointer border ${colors.border} bg-gradient-to-br ${colors.bg} shadow-lg ${colors.shadow} hover:shadow-xl hover:border-opacity-50 transition-all duration-300 group`}
+                      onClick={() => navigate(`/groups/${group.id}`)}
                     >
-                      <Card
-                        className={`cursor-pointer border ${colors.border} bg-gradient-to-br ${colors.bg} shadow-lg ${colors.shadow} hover:shadow-xl hover:border-opacity-50 transition-all duration-300 group`}
-                        onClick={() => navigate(`/groups/${group.id}`)}
-                      >
-                        <CardHeader className="pb-3">
-                          <div className="flex items-center justify-between">
-                            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${colors.icon} flex items-center justify-center shadow-lg ${colors.iconShadow} group-hover:shadow-xl group-hover:scale-105 transition-all duration-300`}>
-                              <Users className="w-7 h-7 text-white" />
+                      <CardHeader className="pb-3">
+                        <div className="flex items-center justify-between">
+                          <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${colors.icon} flex items-center justify-center shadow-lg ${colors.iconShadow} group-hover:shadow-xl group-hover:scale-105 transition-all duration-300`}>
+                            <Users className="w-7 h-7 text-white" />
+                          </div>
+                        </div>
+                        <CardTitle className="mt-4 text-xl">{group.name}</CardTitle>
+                        <CardDescription className="text-sm">
+                          {group.members?.length || 0}
+                          {" "}
+                          members
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex -space-x-2.5">
+                          {group.members?.slice(0, 4).map((member, i) => (
+                            <div
+                              key={member.id || i}
+                              className={`w-9 h-9 rounded-full bg-gradient-to-br ${colors.accent} border-2 border-card flex items-center justify-center text-xs font-semibold text-white shadow-sm`}
+                            >
+                              {member.user?.name?.charAt(0)?.toUpperCase() || "?"}
                             </div>
-                          </div>
-                          <CardTitle className="mt-4 text-xl">{group.name}</CardTitle>
-                          <CardDescription className="text-sm">
-                            {group.members?.length || 0}
-                            {" "}
-                            members
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="flex -space-x-2.5">
-                            {group.members?.slice(0, 4).map((member, i) => (
-                              <div
-                                key={member.id || i}
-                                className={`w-9 h-9 rounded-full bg-gradient-to-br ${colors.accent} border-2 border-card flex items-center justify-center text-xs font-semibold text-white shadow-sm`}
-                              >
-                                {member.user?.name?.charAt(0)?.toUpperCase() || "?"}
-                              </div>
-                            ))}
-                            {(group.members?.length || 0) > 4 && (
-                              <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${colors.accent} opacity-80 border-2 border-card flex items-center justify-center text-xs font-semibold text-white`}>
-                                +
-                                {group.members!.length - 4}
-                              </div>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  );
-                });
-              })()}
-            </motion.div>
-          )
+                          ))}
+                          {(group.members?.length || 0) > 4 && (
+                            <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${colors.accent} opacity-80 border-2 border-card flex items-center justify-center text-xs font-semibold text-white`}>
+                              +
+                              {group.members!.length - 4}
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              });
+            })()}
+          </motion.div>
+        )
         : (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
-            >
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
+          >
             <Card className="text-center py-12">
               <CardContent>
                 <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
@@ -206,8 +206,8 @@ export function Groups() {
                 </div>
               </CardContent>
             </Card>
-            </motion.div>
-          )}
+          </motion.div>
+        )}
 
       {/* Create Group Modal */}
       <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>

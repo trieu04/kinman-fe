@@ -1,5 +1,6 @@
 import * as React from "react";
 import santaGif from "./Santa_Clause.gif";
+import { useThemeStore } from "../../stores/themeStore";
 
 export interface SantaSleighProps {
     /** Thay đổi giá trị này để kích hoạt lại animation */
@@ -35,10 +36,16 @@ export function SantaSleigh({
     imageWidth = 420,
     imageHeight = 90,
 }: SantaSleighProps) {
+    const { christmasEffectsEnabled } = useThemeStore();
     const [active, setActive] = React.useState(false);
     const timerRef = React.useRef<number | null>(null);
 
     React.useEffect(() => {
+        if (!christmasEffectsEnabled) {
+            setActive(false);
+            return;
+        }
+        
         if (timerRef.current) {
             window.clearTimeout(timerRef.current);
             timerRef.current = null;
@@ -52,9 +59,9 @@ export function SantaSleigh({
                 timerRef.current = null;
             }
         };
-    }, [trigger, durationMs]);
+    }, [trigger, durationMs, christmasEffectsEnabled]);
 
-    if (!active) return null;
+    if (!active || !christmasEffectsEnabled) return null;
 
     const isDiagonal = path === "diagonal";
 
