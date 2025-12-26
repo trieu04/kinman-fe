@@ -102,6 +102,7 @@ export interface GroupMember {
   userId: string;
   user?: User;
   role?: string;
+  isHidden?: boolean;
 }
 
 export interface Group {

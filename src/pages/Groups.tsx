@@ -62,7 +62,7 @@ export function Groups() {
         return {
           ...g,
           members: g.members.map(m => {
-            if (m.user.id !== user?.id) return m;
+            if (m.user?.id !== user?.id) return m;
             return { ...m, isHidden: !m.isHidden };
           })
         };
@@ -73,12 +73,12 @@ export function Groups() {
   };
 
   const visibleGroups = groups.filter(g => {
-    const myMember = g.members.find(m => m.user.id === user?.id);
+    const myMember = g.members.find(m => m.user?.id === user?.id);
     return !myMember?.isHidden;
   });
 
   const hiddenGroups = groups.filter(g => {
-    const myMember = g.members.find(m => m.user.id === user?.id);
+    const myMember = g.members.find(m => m.user?.id === user?.id);
     return myMember?.isHidden;
   });
 
@@ -256,7 +256,7 @@ export function Groups() {
                     className="overflow-hidden"
                   >
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-4">
-                      {hiddenGroups.map((group, idx) => (
+                      {hiddenGroups.map((group) => (
                         <Card
                           key={group.id}
                           className="cursor-pointer border bg-muted/50 hover:bg-muted/80 transition-all duration-300 relative group"
