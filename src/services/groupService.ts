@@ -47,6 +47,10 @@ export const groupService = {
   settleUp: async (groupId: string, dto: SettleUpDto): Promise<void> => {
     await api.post(`/groups/${groupId}/settle-up`, dto);
   },
+
+  toggleHidden: async (groupId: string): Promise<void> => {
+    await api.post(`/groups/${groupId}/toggle-hidden`);
+  },
 };
 
 export default groupService;

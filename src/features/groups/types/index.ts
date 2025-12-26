@@ -12,6 +12,7 @@ export interface GroupMember {
   id: string;
   user: User;
   joinedAt: string;
+  isHidden?: boolean;
 }
 
 export interface GroupExpense {
