@@ -45,7 +45,7 @@ export function SantaSleigh({
             setActive(false);
             return;
         }
-        
+
         if (timerRef.current) {
             window.clearTimeout(timerRef.current);
             timerRef.current = null;

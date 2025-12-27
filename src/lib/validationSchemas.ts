@@ -47,3 +47,31 @@ export const editTransactionSchema = z.object({
 });
 
 export type EditTransactionFormData = z.infer<typeof editTransactionSchema>;
+
+// ========== Quick Add Transaction Schema ==========
+export const quickAddFormSchema = z.object({
+  inputText: z.string(),
+  amount: z.number().positive("Amount must be greater than 0").nullable(),
+  date: z.date(),
+  categoryId: z.string().min(1, "Vui lòng chọn danh mục"),
+  walletId: z.string().min(1, "Vui lòng chọn ví"),
+  isSplitBill: z.boolean(),
+  groupId: z.string().optional(),
+  splitType: z.enum(["equal", "exact"] as const),
+  selectedMemberIds: z.array(z.string()),
+  exactAmounts: z.record(z.string(), z.string()),
+});
+
+export type QuickAddFormValues = z.infer<typeof quickAddFormSchema>;
+
+// ========== Split Bill Schema ==========
+export const splitBillFormSchema = z.object({
+  description: z.string().min(1, "Description is required"),
+  amount: z.number().positive("Amount must be greater than 0"),
+  splitType: z.enum(["equal", "exact"] as const),
+  selectedMemberIds: z.array(z.string()),
+  exactAmounts: z.record(z.string(), z.string()),
+  paidBy: z.string().min(1, "Please select who paid"),
+});
+
+export type SplitBillFormValues = z.infer<typeof splitBillFormSchema>;

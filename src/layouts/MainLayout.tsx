@@ -1,6 +1,6 @@
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AiAssistant } from "@/features/ai/components/AiAssistant";
-import { authService } from "@/features/auth/services/auth.service";
+import { AiAssistant } from "@/components/ai/AiAssistant";
+import authService from "@/services/authService";
 import { CreditCard, Home, LogOut, Settings, Users } from "lucide-react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 

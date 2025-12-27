@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Download, Calendar, Users, DollarSign, TrendingUp, AlertCircle } from 'lucide-react';
-import { getGroupSummary, exportGroupReport, type GroupReportSummary } from '@/services/reports';
+import { getGroupSummary, exportGroupReport, type GroupReportSummary } from '@/services/reportService';
 
 export function GroupReport() {
     const { groupId } = useParams<{ groupId: string }>();
@@ -312,3 +312,5 @@ export function GroupReport() {
         </div>
     );
 }
+
+export default GroupReport;

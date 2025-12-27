@@ -59,9 +59,9 @@ export function Login() {
             <Wallet className="w-10 h-10 text-white" />
           </div>
           <div className="space-y-2">
-            <CardTitle className="text-2xl font-bold">Chào mừng trở lại</CardTitle>
+            <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
             <CardDescription className="text-base">
-              Đăng nhập để quản lý chi tiêu của bạn
+              Sign in to manage your expenses
             </CardDescription>
           </div>
         </CardHeader>
@@ -96,7 +96,7 @@ export function Login() {
 
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium">
-                Mật khẩu
+                Password
               </label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -123,23 +123,23 @@ export function Login() {
                 ? (
                     <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Đang đăng nhập...
+                      Signing in...
                     </>
                   )
                 : (
-                    "Đăng nhập"
+                    "Sign In"
                   )}
             </Button>
           </form>
 
           <div className="mt-8 text-center text-sm text-muted-foreground">
-            Chưa có tài khoản?
+            Don't have an account?
             {" "}
             <Link
               to="/signup"
               className="font-semibold text-primary hover:underline"
             >
-              Đăng ký ngay
+              Sign up now
             </Link>
           </div>
         </CardContent>

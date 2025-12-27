@@ -3,23 +3,32 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "./components/layout/MainLayout";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { QuickAddModal } from "./components/expense/QuickAddModal";
+import { LazyBoundary } from "./components/ui/LazyBoundary";
 import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
-import { Dashboard } from "./pages/Dashboard";
-import { Transactions } from "./pages/Transactions";
-import { Groups } from "./pages/Groups";
-import { GroupDetail } from "./pages/GroupDetail";
-import { Settings } from "./pages/Settings";
-import { UserReport } from "./pages/UserReport";
-import { GroupReport } from "./pages/GroupReport";
 import { useAuthStore } from "./stores/authStore";
 import { useThemeStore } from "./stores/themeStore";
+import { useRealtimeConnection } from "./hooks/useRealtime";
+import { useRealtimeSync } from "./services/realtimeService";
 import "./index.css";
+
+// Lazy load heavy components to reduce initial bundle
+const Dashboard = React.lazy(() => import("./pages/Dashboard"));
+const Transactions = React.lazy(() => import("./pages/Transactions"));
+const Groups = React.lazy(() => import("./pages/Groups"));
+const GroupDetail = React.lazy(() => import("./components/group/GroupDetail"));
+const Settings = React.lazy(() => import("./pages/Settings"));
+const UserReport = React.lazy(() => import("./pages/UserReport"));
+const GroupReport = React.lazy(() => import("./components/group/GroupReport"));
 
 function App() {
   const [quickAddOpen, setQuickAddOpen] = React.useState(false);
   const { isAuthenticated, fetchUser } = useAuthStore();
   const { resolvedTheme } = useThemeStore();
+
+  // Enable realtime connection
+  useRealtimeConnection();
+  useRealtimeSync();
 
   // Check auth on mount
   React.useEffect(() => {
@@ -103,13 +112,13 @@ function App() {
             </ProtectedRoute>
           )}
           >
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/transactions" element={<Transactions />} />
-            <Route path="/groups" element={<Groups />} />
-            <Route path="/groups/:id" element={<GroupDetail />} />
-            <Route path="/reports/user" element={<UserReport />} />
-            <Route path="/reports/group/:groupId" element={<GroupReport />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route path="/" element={<LazyBoundary><Dashboard /></LazyBoundary>} />
+            <Route path="/transactions" element={<LazyBoundary><Transactions /></LazyBoundary>} />
+            <Route path="/groups" element={<LazyBoundary><Groups /></LazyBoundary>} />
+            <Route path="/groups/:id" element={<LazyBoundary><GroupDetail /></LazyBoundary>} />
+            <Route path="/reports/user" element={<LazyBoundary><UserReport /></LazyBoundary>} />
+            <Route path="/reports/group/:groupId" element={<LazyBoundary><GroupReport /></LazyBoundary>} />
+            <Route path="/settings" element={<LazyBoundary><Settings /></LazyBoundary>} />
           </Route>
 
           {/* Fallback */}

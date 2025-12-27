@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, Calendar, TrendingDown, FileText } from 'lucide-react';
-import { getUserSummary, exportUserReport, type UserReportSummary } from '@/services/reports';
+import { getUserSummary, exportUserReport, type UserReportSummary } from '@/services/reportService';
 
 export function UserReport() {
     const [loading, setLoading] = useState(false);
@@ -249,3 +249,5 @@ export function UserReport() {
         </div>
     );
 }
+
+export default UserReport;

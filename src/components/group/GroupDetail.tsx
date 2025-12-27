@@ -2,14 +2,14 @@ import * as React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Copy, Check, Users, Receipt, CreditCard } from "lucide-react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import { Badge } from "../components/ui/badge";
-import { SplitBillForm } from "../components/group/SplitBillForm";
-import groupService from "../services/groupService";
-import { realtimeService } from "../services/realtimeService";
-import { useRealtimeEvent } from "../hooks/useRealtime";
-import type { Group, GroupExpense, Debt } from "../types";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { SplitBillForm } from "./SplitBillForm";
+import groupService from "@/services/groupService";
+import { realtimeService } from "@/services/realtimeService";
+import { useRealtimeEvent } from "@/hooks/useRealtime";
+import type { Group, GroupExpense, Debt } from "@/types";
 
 export function GroupDetail() {
   const { id } = useParams<{ id: string }>();
@@ -20,20 +20,6 @@ export function GroupDetail() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [showAddExpense, setShowAddExpense] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
-
-    const getDisplayName = (user: string | any) => {
-      if (typeof user === "string") return user;
-      return user?.name || user?.email || "?";
-    };
-
-    const getUserId = (user: string | any) => {
-      return typeof user === "string" ? user : user?.id;
-    };
-
-    const getInitial = (user: string | any) => {
-      const name = getDisplayName(user);
-      return name?.charAt(0)?.toUpperCase() || "?";
-    };
 
   const fetchGroupData = React.useCallback(async (options?: { silent?: boolean }) => {
     if (!id) return;
@@ -105,18 +91,18 @@ export function GroupDetail() {
   const handleSettleUp = async (debt: Debt) => {
     if (!id)
       return;
-
-    const fromName = getDisplayName(debt.from);
-    const toName = getDisplayName(debt.to);
-    const fromId = getUserId(debt.from);
-    const toId = getUserId(debt.to);
-
+    
+    const fromName = typeof debt.from === 'string' ? debt.from : (debt.from?.name || debt.from?.email || '?');
+    const toName = typeof debt.to === 'string' ? debt.to : (debt.to?.name || debt.to?.email || '?');
+    const fromId = typeof debt.from === 'string' ? debt.from : debt.from?.id;
+    const toId = typeof debt.to === 'string' ? debt.to : debt.to?.id;
+    
     const confirmed = window.confirm(
       `Confirm that ${fromName} has paid ${formatCurrency(debt.amount)} to ${toName}?`
     );
-
+    
     if (!confirmed) return;
-
+    
     try {
       await groupService.settleUp(id, { fromUserId: fromId, toUserId: toId, amount: debt.amount });
       await fetchGroupData(); // Refresh debts
@@ -237,23 +223,26 @@ export function GroupDetail() {
           <CardContent className="space-y-3 overflow-y-auto flex-1 max-h-[500px]">
             {debts.length > 0
               ? (
-                  debts.map((debt, i) => (
+                  debts.map((debt, i) => {
+                    const fromName = typeof debt.from === 'string' ? debt.from : (debt.from?.name || debt.from?.email || '?');
+                    const toName = typeof debt.to === 'string' ? debt.to : (debt.to?.name || debt.to?.email || '?');
+                    return (
                     <div key={i} className="p-4 rounded-lg bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20 border border-red-200 dark:border-red-800">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white text-sm font-medium">
-                                {getInitial(debt.from)}
-                              </div>
+                              {fromName.charAt(0)?.toUpperCase() || "?"}
+                            </div>
                             <span className="text-sm text-muted-foreground">→</span>
-                              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center text-white text-sm font-medium">
-                                {getInitial(debt.to)}
-                              </div>
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center text-white text-sm font-medium">
+                              {toName.charAt(0)?.toUpperCase() || "?"}
+                            </div>
                           </div>
                           <p className="text-sm leading-relaxed">
-                              <span className="font-semibold text-foreground">{getDisplayName(debt.from)}</span>
+                            <span className="font-semibold text-foreground">{fromName}</span>
                             <span className="text-muted-foreground"> owes </span>
-                              <span className="font-semibold text-foreground">{getDisplayName(debt.to)}</span>
+                            <span className="font-semibold text-foreground">{toName}</span>
                           </p>
                           <p className="text-2xl font-bold text-red-600 dark:text-red-400 mt-1">
                             {formatCurrency(debt.amount)}
@@ -268,7 +257,8 @@ export function GroupDetail() {
                         </Button>
                       </div>
                     </div>
-                  ))
+                    );
+                  })
                 )
               : (
                   <div className="text-center py-8">

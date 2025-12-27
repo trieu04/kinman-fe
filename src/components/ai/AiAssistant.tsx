@@ -10,9 +10,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { aiService, type ParsedTransaction } from "../services/ai.service";
+import aiService, { type ParsedTransaction } from "@/services/aiService";
 import { Loader2, Sparkles, Mic } from "lucide-react";
-import { TransactionForm } from "@/features/transactions/components/TransactionForm";
+import { QuickAddModal } from "@/components/expense/QuickAddModal";
 
 export function AiAssistant() {
   const [isOpen, setIsOpen] = useState(false);
@@ -159,9 +159,10 @@ export function AiAssistant() {
                 Back
               </Button>
             </div>
-            <TransactionForm
+            <QuickAddModal
+              open={showForm}
+              onOpenChange={setShowForm}
               onSuccess={handleSuccess}
-              initialData={result || undefined}
             />
           </div>
         )}

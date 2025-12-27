@@ -1,4 +1,81 @@
-# React + TypeScript + Vite
+# Kinman Frontend
+
+Modern expense tracking and group bill splitting application built with React + TypeScript + Vite.
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ 
+- pnpm (recommended package manager)
+
+### Installation
+
+1. Install pnpm globally (if not already installed):
+```bash
+npm install -g pnpm
+```
+
+2. Install dependencies:
+```bash
+pnpm install
+```
+
+3. Create environment file:
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and configure:
+```env
+VITE_API_URL=http://localhost:3000/api
+VITE_WS_URL=http://localhost:3000
+```
+
+### Development
+
+Start the development server:
+```bash
+pnpm dev
+```
+
+The app will be available at `http://localhost:5173`
+
+### Build for Production
+
+Build the application:
+```bash
+pnpm build
+```
+
+Preview production build:
+```bash
+pnpm preview
+```
+
+## 📦 Features
+
+- 💰 Personal expense tracking with categories and wallets
+- 👥 Group expense splitting (equal/exact amounts)
+- 🔄 Real-time updates via Socket.IO
+- 📊 Visual reports and analytics
+- 🌙 Dark mode support
+- 📱 Responsive design
+- 🎨 Modern UI with Tailwind CSS and shadcn/ui
+
+## 🛠 Tech Stack
+
+- React 18 with TypeScript
+- Vite 7 for fast builds
+- TanStack Query for data fetching
+- Zustand for state management
+- React Hook Form + Zod for validation
+- Socket.IO client for real-time features
+- Tailwind CSS + shadcn/ui components
+- Framer Motion for animations
+
+---
+
+## React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

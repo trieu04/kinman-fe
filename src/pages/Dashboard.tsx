@@ -17,7 +17,7 @@ import {
   BarChart,
   Bar,
 } from "recharts";
-import { endOfMonth, format, startOfMonth } from "date-fns";
+import { format, startOfMonth } from "date-fns";
 
 export function Dashboard() {
   const { fetchWallets } = useExpenseStore();
@@ -32,7 +32,6 @@ export function Dashboard() {
   const [chartMode, setChartMode] = React.useState<"monthly" | "daily">("monthly");
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = React.useState<number>(currentYear);
-  const [selectedMonth, setSelectedMonth] = React.useState<number | "all">("all");
   const [dailyRange, setDailyRange] = React.useState({
     start: format(startOfMonth(new Date()), "yyyy-MM-dd"),
     end: format(new Date(), "yyyy-MM-dd"),
@@ -83,14 +82,8 @@ export function Dashboard() {
     const computeMonthlyCounts = async () => {
       setIsChartLoading(true);
       try {
-        let start = `${selectedYear}-01-01`;
-        let end = `${selectedYear}-12-31`;
-
-        if (selectedMonth !== "all") {
-          const d = new Date(selectedYear, selectedMonth - 1, 1);
-          start = format(startOfMonth(d), "yyyy-MM-dd");
-          end = format(endOfMonth(d), "yyyy-MM-dd");
-        }
+        const start = `${selectedYear}-01-01`;
+        const end = `${selectedYear}-12-31`;
 
         const tx = await transactionService.getAll({ startDate: start, endDate: end });
         setTransactionCount(tx.length);
@@ -104,7 +97,7 @@ export function Dashboard() {
     };
 
     computeMonthlyCounts();
-  }, [chartMode, selectedYear, selectedMonth]);
+  }, [chartMode, selectedYear]);
 
   React.useEffect(() => {
     if (chartMode !== "daily")
@@ -132,7 +125,7 @@ export function Dashboard() {
   React.useEffect(() => {
     setHoverLabel("");
     setHoverValue(null);
-  }, [chartMode, selectedYear, selectedMonth, dailyRange]);
+  }, [chartMode, selectedYear, dailyRange]);
 
   const monthlyChartData = React.useMemo(() => {
     // Ensure 12 months are always present for the selected year
@@ -157,24 +150,15 @@ export function Dashboard() {
     amount: item.total,
   }));
 
-  const chartData = chartMode === "monthly"
-    ? (selectedMonth === "all"
-      ? monthlyChartData
-      : monthlyChartData.filter(item => item.month === selectedMonth))
-    : dailyChartData;
+  const chartData = chartMode === "monthly" ? monthlyChartData : dailyChartData;
 
   const monthlyChartTotal = monthlyChartData.reduce((sum, item) => sum + item.amount, 0);
   const dailyChartTotal = dailyChartData.reduce((sum, item) => sum + item.amount, 0);
-  const monthSelectedTotal = selectedMonth === "all"
-    ? monthlyChartTotal
-    : (monthlyTrend.find(m => m.month === selectedMonth)?.total || 0);
 
-  const chartTotal = chartMode === "monthly" ? monthSelectedTotal : dailyChartTotal;
+  const chartTotal = chartMode === "monthly" ? monthlyChartTotal : dailyChartTotal;
 
   const rangeLabel = chartMode === "monthly"
-    ? (selectedMonth === "all"
-      ? `Year ${selectedYear}`
-      : `${format(new Date(selectedYear, Number(selectedMonth) - 1), "MMM yyyy")}`)
+    ? `Year ${selectedYear}`
     : `${format(new Date(dailyRange.start), "MMM d")} - ${format(new Date(dailyRange.end), "MMM d")}`;
 
   const displayValue = hoverValue !== null ? hoverValue : chartTotal;
@@ -329,22 +313,6 @@ export function Dashboard() {
                             const year = currentYear - offset;
                             return <option key={year} value={year}>{year}</option>;
                           })}
-                        </select>
-                      </div>
-
-                      <div className="relative">
-                        <select
-                          className="h-10 rounded-md border bg-background px-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 max-h-52 overflow-y-auto"
-                          value={selectedMonth === "all" ? "all" : selectedMonth}
-                          onChange={e => {
-                            const val = e.target.value;
-                            setSelectedMonth(val === "all" ? "all" : Number(val));
-                          }}
-                        >
-                          <option value="all">All months</option>
-                          {Array.from({ length: 12 }, (_, idx) => idx + 1).map(m => (
-                            <option key={m} value={m}>{format(new Date(0, m - 1), "MMM")}</option>
-                          ))}
                         </select>
                       </div>
                     </div>

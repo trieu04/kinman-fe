@@ -57,9 +57,9 @@ export function Signup() {
             <Wallet className="w-10 h-10 text-white" />
           </div>
           <div className="space-y-2">
-            <CardTitle className="text-2xl font-bold">Tạo tài khoản</CardTitle>
+            <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
             <CardDescription className="text-base">
-              Bắt đầu quản lý chi tiêu thông minh
+              Start managing your expenses smarter
             </CardDescription>
           </div>
         </CardHeader>
@@ -74,14 +74,14 @@ export function Signup() {
 
             <div className="space-y-2">
               <label htmlFor="name" className="text-sm font-medium">
-                Họ và tên
+                Full Name
               </label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input
                   id="name"
                   type="text"
-                  placeholder="Nguyễn Văn A"
+                  placeholder="John Doe"
                   className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
                   autoComplete="name"
                   {...register("name")}
@@ -94,7 +94,7 @@ export function Signup() {
 
             <div className="space-y-2">
               <label htmlFor="username" className="text-sm font-medium">
-                Tên người dùng
+                Username
                 {" "}
                 <span className="text-destructive">*</span>
               </label>
@@ -138,7 +138,7 @@ export function Signup() {
 
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium">
-                Mật khẩu
+                Password
                 {" "}
                 <span className="text-destructive">*</span>
               </label>
@@ -160,7 +160,7 @@ export function Signup() {
 
             <div className="space-y-2">
               <label htmlFor="confirmPassword" className="text-sm font-medium">
-                Xác nhận mật khẩu
+                Confirm Password
                 {" "}
                 <span className="text-destructive">*</span>
               </label>
@@ -189,23 +189,23 @@ export function Signup() {
                 ? (
                     <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Đang tạo tài khoản...
+                      Creating account...
                     </>
                   )
                 : (
-                    "Đăng ký"
+                    "Sign Up"
                   )}
             </Button>
           </form>
 
           <div className="mt-8 text-center text-sm text-muted-foreground">
-            Đã có tài khoản?
+            Already have an account?
             {" "}
             <Link
               to="/login"
               className="font-semibold text-primary hover:underline"
             >
-              Đăng nhập
+              Sign in
             </Link>
           </div>
         </CardContent>

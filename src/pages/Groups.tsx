@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import groupService from "../services/groupService";
 import type { Group } from "../types";
 import useAuthStore from "../stores/authStore";
+import { useRealtimeEvent } from "../hooks/useRealtime";
 
 export function Groups() {
   const navigate = useNavigate();
@@ -34,8 +35,11 @@ export function Groups() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [showHidden, setShowHidden] = React.useState(false);
 
-  const fetchGroups = async () => {
-    setIsLoading(true);
+  const fetchGroups = React.useCallback(async (options?: { silent?: boolean }) => {
+    const silent = options?.silent;
+    if (!silent) {
+      setIsLoading(true);
+    }
     try {
       const data = await groupService.getAll();
       setGroups(data);
@@ -44,13 +48,19 @@ export function Groups() {
       console.error("Failed to fetch groups:", error);
     }
     finally {
-      setIsLoading(false);
+      if (!silent) {
+        setIsLoading(false);
+      }
     }
-  };
+  }, []);
 
   React.useEffect(() => {
     fetchGroups();
-  }, []);
+  }, [fetchGroups]);
+
+  useRealtimeEvent("realtime:group-updated", () => {
+    fetchGroups({ silent: true });
+  });
 
   const handleToggleHidden = async (e: React.MouseEvent, groupId: string) => {
     e.stopPropagation();

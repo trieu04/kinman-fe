@@ -1,4 +1,4 @@
-import { api } from "../../../services/api";
+import api from "./api";
 
 export interface ParsedTransaction {
   amount: number;
@@ -9,7 +9,9 @@ export interface ParsedTransaction {
 
 export const aiService = {
   parseTransaction: async (text: string): Promise<ParsedTransaction> => {
-    const response = await api.post("/ai/parse-transaction", { text });
+    const response = await api.post<ParsedTransaction>("/ai/parse-transaction", { text });
     return response.data;
   },
 };
+
+export default aiService;

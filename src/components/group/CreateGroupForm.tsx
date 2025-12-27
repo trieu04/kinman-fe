@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { groupService } from "../services/group.service";
+import groupService from "@/services/groupService";
 
 export function CreateGroupForm() {
   const navigate = useNavigate();

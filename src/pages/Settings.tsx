@@ -201,7 +201,7 @@ export function Settings() {
       >
         <Card className="border border-primary/10 shadow-lg shadow-primary/10 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
               <User className="w-5 h-5 text-primary" />
               Profile
             </CardTitle>
@@ -288,7 +288,7 @@ export function Settings() {
       >
         <Card className="border border-purple-500/20 shadow-lg shadow-purple-500/10 bg-gradient-to-br from-white to-purple-50/60 dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
               <Bell className="w-5 h-5 text-purple-500" />
               Notifications
             </CardTitle>
@@ -353,7 +353,7 @@ export function Settings() {
       >
         <Card className="border border-amber-500/20 shadow-lg shadow-amber-500/10 bg-gradient-to-br from-white to-amber-50/60 dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
               <Tag className="w-5 h-5 text-amber-500" />
               Categories
             </CardTitle>
@@ -366,7 +366,7 @@ export function Settings() {
                 value={newCategoryName}
                 onChange={e => setNewCategoryName(e.target.value)}
                 placeholder="New category name"
-                className="flex-1 h-10 px-3 rounded-md border border-amber-500/30 bg-white/80 dark:bg-slate-900/70 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/60 focus:border-amber-500/50 transition"
+                className="flex-1 h-10 px-3 rounded-md border border-amber-500/40 bg-amber-50/30 dark:bg-slate-900/50 text-foreground dark:text-slate-100 placeholder-foreground/50 dark:placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition shadow-sm"
                 onKeyDown={e => e.key === "Enter" && handleAddCategory()}
               />
               <Button onClick={handleAddCategory} disabled={!newCategoryName.trim()} className="bg-amber-500 hover:bg-amber-600 text-white">
@@ -419,7 +419,7 @@ export function Settings() {
       >
         <Card className="border border-indigo-500/20 shadow-lg shadow-indigo-500/10 bg-gradient-to-br from-white to-indigo-50/60 dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
               <Wallet className="w-5 h-5 text-indigo-500" />
               Wallets
             </CardTitle>
@@ -432,7 +432,7 @@ export function Settings() {
                 value={newWalletName}
                 onChange={e => setNewWalletName(e.target.value)}
                 placeholder="New wallet name"
-                className="flex-1 h-10 px-3 rounded-md border border-indigo-500/30 bg-white/80 dark:bg-slate-900/70 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/60 focus:border-indigo-500/50 transition"
+                className="flex-1 h-10 px-3 rounded-md border border-indigo-500/40 bg-indigo-50/30 dark:bg-slate-900/50 text-foreground dark:text-slate-100 placeholder-foreground/50 dark:placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm"
                 onKeyDown={e => e.key === "Enter" && handleAddWallet()}
               />
               <Button onClick={handleAddWallet} disabled={!newWalletName.trim()} className="bg-indigo-500 hover:bg-indigo-600 text-white">

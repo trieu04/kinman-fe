@@ -1,7 +1,8 @@
 import api from "./api";
-import type { Transaction, CreateTransactionDto, TransactionFilter } from "../types";
+import type { Transaction, CreateTransactionDto, TransactionFilter, Category, Wallet } from "../types";
 
 export const transactionService = {
+  // Basic CRUD operations
   getAll: async (filter?: TransactionFilter): Promise<Transaction[]> => {
     const response = await api.get<Transaction[]>("/transactions", { params: filter });
     return response.data;
@@ -24,6 +25,17 @@ export const transactionService = {
 
   delete: async (id: string): Promise<void> => {
     await api.delete(`/transactions/${id}`);
+  },
+
+  // Metadata operations
+  getCategories: async (): Promise<Category[]> => {
+    const response = await api.get<Category[]>("/categories");
+    return response.data;
+  },
+
+  getWallets: async (): Promise<Wallet[]> => {
+    const response = await api.get<Wallet[]>("/wallets");
+    return response.data;
   },
 };
 

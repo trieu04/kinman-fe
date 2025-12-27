@@ -9,8 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { groupService } from "../services/group.service";
-import type { GroupMember } from "../types";
+import groupService from "@/services/groupService";
+import type { GroupMember } from "@/types";
 
 interface AddGroupExpenseFormProps {
   groupId: string;
@@ -44,15 +44,15 @@ export function AddGroupExpenseForm({
       const remainder = Math.round((amountNum - totalSplit) * 100) / 100;
 
       const splits = members.map((member, index) => ({
-        userId: member.user.id,
+        userId: member.user?.id || member.userId,
         amount: index === members.length - 1 ? splitAmount + remainder : splitAmount,
       }));
 
       await groupService.addExpense(groupId, {
         description,
         amount: amountNum,
-        payerId,
-        splitType: "EXACT",
+        paidBy: payerId,
+        splitType: "exact",
         splits,
       });
       onSuccess();
@@ -98,8 +98,8 @@ export function AddGroupExpenseForm({
           </SelectTrigger>
           <SelectContent>
             {members.map((member) => (
-              <SelectItem key={member.user.id} value={member.user.id}>
-                {member.user.name}
+              <SelectItem key={member.user?.id || member.userId} value={member.user?.id || member.userId}>
+                {member.user?.name || "Unknown User"}
               </SelectItem>
             ))}
           </SelectContent>

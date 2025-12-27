@@ -17,6 +17,9 @@ interface AuthState {
   fetchUser: () => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
   clearError: () => void;
+
+  // Getter for compatibility
+  token: string | null;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -112,6 +115,10 @@ export const useAuthStore = create<AuthState>()(
           set({ error: message, isLoading: false });
           throw error;
         }
+      },
+
+      get token() {
+        return this.accessToken;
       },
     }),
     {

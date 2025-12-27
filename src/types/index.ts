@@ -10,7 +10,8 @@ export interface User {
 
 // ========== Auth ==========
 export interface SignInDto {
-  username: string;
+  username?: string;
+  email?: string;
   password: string;
 }
 
@@ -146,8 +147,8 @@ export interface CreateGroupExpenseDto {
 
 // ========== Debts ==========
 export interface Debt {
-  from: User;
-  to: User;
+  from: string | User; // User ID or full User object
+  to: string | User; // User ID or full User object
   amount: number;
 }
 
@@ -192,4 +193,17 @@ export interface NlpParseResult {
   description: string;
   amount?: number;
   date?: Date;
+}
+
+// ========== Auth Credentials (for backwards compatibility) ==========
+export interface LoginCredentials {
+  email: string;
+  password?: string;
+}
+
+export interface RegisterCredentials {
+  email: string;
+  password?: string;
+  username?: string;
+  name?: string;
 }
